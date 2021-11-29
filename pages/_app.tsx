@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 
-import 'antd/dist/antd.compact.less';
+import '@arco-design/web-react/dist/css/index.less';
 import '../styles/globals.less'
 
 type NextPageWithLayout = NextPage & {

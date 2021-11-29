@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
-import { Layout } from 'antd';
+import { Layout } from '@arco-design/web-react';
 
 export default function Header({ children }: { children: ReactElement }) {
-    return <Layout.Header className='header'>{children}</Layout.Header>;
+  return <Layout.Header className="header">{children}</Layout.Header>;
 }
