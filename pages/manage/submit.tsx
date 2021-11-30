@@ -1,4 +1,5 @@
 import { Upload, Steps, Layout, Affix } from '@arco-design/web-react';
+import { UploadItem } from '@arco-design/web-react/es/Upload';
 import React, { ReactElement, useRef, useState } from 'react';
 import Main from '../../components/main';
 import MdEditor from '../../components/md-editor';
@@ -10,15 +11,23 @@ const { Step } = Steps;
 // https://github.com/imzbf/md-editor-rt
 const Submit = () => {
   const step = useState(1);
-  const file = useRef<File>();
+  const [file, setFile] = useState<UploadItem | null>(null);
 
   return (
     <div className={style.submit}>
       <div>
-        <Upload action="/" />
+        <Upload
+          action="/api/upload"
+          disabled={!!file}
+          beforeUpload={(file) => /.+\.md$/i.test(file.name)}
+          fileList={file ? [file] : []}
+          onChange={(_, file) => {
+            setFile(file);
+          }}
+        />
       </div>
       <div>
-        <MdEditor />
+        <MdEditor modelValue={file?.response?.data || ''} />
       </div>
     </div>
   );
