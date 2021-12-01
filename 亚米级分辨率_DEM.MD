@@ -1,3 +1,14 @@
+---
+title: 《JavaScript教程》笔记
+date: 2020-01-12 11:51:53
+permalink: /pages/d8cae9
+categories:
+  - 前端
+  - JavaScript
+tags:
+  -
+---
+
 # 1米分辨率DEM
 
 # 1.数据介绍

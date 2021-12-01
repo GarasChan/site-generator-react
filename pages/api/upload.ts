@@ -6,10 +6,12 @@ import nextConnect from 'next-connect';
 import multer from 'multer';
 import { resolve } from 'path';
 
-type Data = {
+export type ResponseData = {
   success: boolean;
-  data: string;
+  data: Record<string, any>;
+  content: string;
   name?: string;
+  originName?: string;
 };
 
 // first we need to disable the default body parser
@@ -38,18 +40,21 @@ const upload = multer({
 });
 
 const handler = nextConnect({
-  onError(error, _, res: NextApiResponse<Data>) {
-    res.status(501).json({ success: false, data: error.message });
+  onError(error, _, res: NextApiResponse<ResponseData>) {
+    res
+      .status(501)
+      .json({ success: false, content: error.message, data: {}, name: filename, originName: filename.split('-')[0] });
   }
 });
 
 handler.use(upload.single('file'));
 
-handler.post((_, res: NextApiResponse<Data>) => {
+handler.post((_, res: NextApiResponse<ResponseData>) => {
   const str = fs.readFileSync(resolve(storePath, filename), 'utf8');
-  const { content } = matter(str);
+  console.log(matter(str));
+  const { content, data } = matter(str);
   res.statusCode = 200;
-  res.status(200).json({ success: true, data: content, name: filename });
+  res.status(200).json({ success: true, data, content, name: filename, originName: filename.split('-')[0] });
 });
 
 export default handler;

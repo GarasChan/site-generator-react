@@ -1,35 +1,27 @@
-import { Upload, Steps, Layout, Affix } from '@arco-design/web-react';
-import { UploadItem } from '@arco-design/web-react/es/Upload';
-import React, { ReactElement, useRef, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
+import { Steps } from '@arco-design/web-react';
 import Main from '../../components/main';
-import MdEditor from '../../components/md-editor';
-import style from '../../styles/submit.module.less';
+import Upload from '../../components/submit/upload';
+import Editor from '../../components/submit/editor';
+import { ResponseData } from '../api/upload';
+import 'md-editor-rt/lib/style.css';
 
 const { Step } = Steps;
 
-// https://github.com/uiwjs/react-md-editor
 // https://github.com/imzbf/md-editor-rt
 const Submit = () => {
   const step = useState(1);
-  const [file, setFile] = useState<UploadItem | null>(null);
+  const [data, setData] = useState<ResponseData>({} as ResponseData);
+
+  const updateContent = (val: string) => {
+    setData((d) => ({ ...d, content: val }));
+  };
 
   return (
-    <div className={style.submit}>
-      <div>
-        <Upload
-          action="/api/upload"
-          disabled={!!file}
-          beforeUpload={(file) => /.+\.md$/i.test(file.name)}
-          fileList={file ? [file] : []}
-          onChange={(_, file) => {
-            setFile(file);
-          }}
-        />
-      </div>
-      <div>
-        <MdEditor modelValue={file?.response?.data || ''} />
-      </div>
-    </div>
+    <>
+      <Upload setData={setData} />
+      {data?.content && <Editor value={data.content} updateContent={updateContent} />}
+    </>
   );
 };
 
