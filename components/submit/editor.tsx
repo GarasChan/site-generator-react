@@ -1,9 +1,9 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { Button, Space, Divider } from '@arco-design/web-react';
+import React, { useState } from 'react';
+import { Button } from '@arco-design/web-react';
 import classnames from 'classnames';
 import { default as MdEditor } from 'md-editor-rt';
-import { ResponseData } from '../../pages/api/upload';
 import 'md-editor-rt/lib/style.css';
+import classNames from 'classnames';
 
 enum EditorMode {
   preview = 'preview',
@@ -13,28 +13,28 @@ enum EditorMode {
 export interface EditorProps {
   value: string;
   updateContent: (val: string) => void;
+  hide?: boolean;
 }
 
 // https://github.com/imzbf/md-editor-rt
 const Editor = (props: EditorProps) => {
-  const { value, updateContent } = props;
+  const { value, updateContent, hide } = props;
   const [mode, setMode] = useState(EditorMode.preview);
-
-  const changeMode = () => {
-    setMode(mode === EditorMode.preview ? EditorMode.edit : EditorMode.preview);
-  };
 
   const handleChange = (val: string) => {
     updateContent(val);
   };
 
+  const edit = () => {
+    setMode(EditorMode.edit);
+  };
+
+  const preview = () => {
+    setMode(EditorMode.preview);
+  };
+
   return (
-    <>
-      <Divider />
-      <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button onClick={changeMode}>{mode === EditorMode.preview ? '编辑' : '保存'}</Button>
-      </Space>
-      <Divider />
+    <div style={{ position: 'relative' }} className={classNames({ hidden: hide })}>
       <MdEditor
         editorClass={classnames({ hidden: mode !== EditorMode.preview })}
         editorId="preview"
@@ -47,10 +47,16 @@ const Editor = (props: EditorProps) => {
         style={{ height: 800 }}
         previewTheme="vuepress"
         modelValue={value}
-        toolbarsExclude={['save', 'pageFullscreen', 'fullscreen', 'htmlPreview', 'github']}
+        toolbarsExclude={['pageFullscreen', 'fullscreen', 'htmlPreview', 'github']}
         onChange={handleChange}
+        onSave={preview}
       />
-    </>
+      {mode === EditorMode.preview && (
+        <Button style={{ position: 'absolute', right: 24, top: 24 }} shape="round" type="primary" onClick={edit}>
+          编辑
+        </Button>
+      )}
+    </div>
   );
 };
 

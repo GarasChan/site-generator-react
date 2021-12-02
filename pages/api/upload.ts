@@ -6,7 +6,7 @@ import nextConnect from 'next-connect';
 import multer from 'multer';
 import { resolve } from 'path';
 
-export type ResponseData = {
+export type UploadResponseData = {
   success: boolean;
   data: Record<string, any>;
   content: string;
@@ -40,7 +40,7 @@ const upload = multer({
 });
 
 const handler = nextConnect({
-  onError(error, _, res: NextApiResponse<ResponseData>) {
+  onError(error, _, res: NextApiResponse<UploadResponseData>) {
     res
       .status(501)
       .json({ success: false, content: error.message, data: {}, name: filename, originName: filename.split('-')[0] });
@@ -49,7 +49,7 @@ const handler = nextConnect({
 
 handler.use(upload.single('file'));
 
-handler.post((_, res: NextApiResponse<ResponseData>) => {
+handler.post((_, res: NextApiResponse<UploadResponseData>) => {
   const str = fs.readFileSync(resolve(storePath, filename), 'utf8');
   console.log(matter(str));
   const { content, data } = matter(str);

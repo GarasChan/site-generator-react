@@ -1,0 +1,26 @@
+@header-height: 64px;
+@base-zIndex: 100;
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: @header-height;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-menu-dark-bg);
+  z-index: @base-zIndex + 1;
+
+  .user {
+    margin-left: auto;
+    font-size: 32px;
+    color: orange;
+  }
+}
+
+.content {
+  margin-top: @header-height;
+  padding: 24px;
+  z-index: @base-zIndex;
+}
