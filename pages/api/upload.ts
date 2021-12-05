@@ -7,9 +7,9 @@ import multer from 'multer';
 import { resolve } from 'path';
 
 export type UploadResponseData = {
-  success: boolean;
   data: Record<string, any>;
   content: string;
+  success?: boolean;
   name?: string;
   originName?: string;
 };
@@ -54,7 +54,7 @@ handler.post((_, res: NextApiResponse<UploadResponseData>) => {
   console.log(matter(str));
   const { content, data } = matter(str);
   res.statusCode = 200;
-  res.status(200).json({ success: true, data, content, name: filename, originName: filename.split('-')[0] });
+  res.status(200).json({ success: true, data, content, name: filename, originName: filename.split('-')[1] });
 });
 
 export default handler;
