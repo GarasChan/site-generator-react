@@ -1,8 +1,9 @@
 import React, { Dispatch, SetStateAction, useCallback, useContext, useState } from 'react';
+import { v4 } from 'uuid';
 import { Upload as ArcoUpload, Message, Modal, Space, Button, Tooltip } from '@arco-design/web-react';
 import { UploadResponseData } from '../../pages/api/upload';
 import classNames from 'classnames';
-import SubmitContext, { DEFAULT_SUBMIT_DATA } from './context';
+import SubmitContext, { DEFAULT_SUBMIT_DATA, SubmitData } from './context';
 
 export interface UploadProps {
   hide?: boolean;
@@ -22,7 +23,8 @@ const Upload = (props: UploadProps) => {
 
   const handleNew = useCallback(() => {
     if (!data.name) {
-      updateData({ ...DEFAULT_SUBMIT_DATA, name: `${Date.now()}` });
+      const id = v4();
+      updateData({ ...DEFAULT_SUBMIT_DATA, id, name: `${id}.md` });
     }
     goNext();
   }, [data.name, goNext, updateData]);
@@ -35,7 +37,7 @@ const Upload = (props: UploadProps) => {
         return;
       }
       if (file?.status === 'done' && file?.response) {
-        updateData(file?.response as UploadResponseData);
+        updateData({ ...file.response, id: file.uid } as SubmitData);
       }
     },
     [updateData]

@@ -1,11 +1,11 @@
 import React, { ReactElement, useCallback, useState } from 'react';
 import { Steps } from '@arco-design/web-react';
+import SubmitContext, { DEFAULT_SUBMIT_DATA, SubmitContextData, SubmitData } from '../../components/submit/context';
 import Main from '../../components/layout/main';
 import Upload from '../../components/submit/upload';
 import Editor from '../../components/submit/editor';
 import Meta from '../../components/submit/meta';
-import 'md-editor-rt/lib/style.css';
-import SubmitContext, { DEFAULT_SUBMIT_DATA, SubmitContextData, SubmitData } from '../../components/submit/context';
+import Result from '../../components/submit/result';
 
 const { Step } = Steps;
 
@@ -22,7 +22,6 @@ const Submit = () => {
   }, []);
 
   const updateData = useCallback((val: SubmitData) => {
-    console.log(val);
     setData(val);
   }, []);
 
@@ -40,7 +39,7 @@ const Submit = () => {
           <>
             <Editor hide={current !== 2} />
             <Meta hide={current !== 3} />
-            {current === 4 && <div>提交成功</div>}
+            <Result hide={current !== 4} />
           </>
         )}
       </div>

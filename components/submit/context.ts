@@ -14,7 +14,7 @@ export interface SubmitContextData {
 
 const noop = () => {};
 
-export const DEFAULT_SUBMIT_DATA = { id: `${Date.now()}`, data: {}, content: '' };
+export const DEFAULT_SUBMIT_DATA = { id: '', data: {}, content: '' };
 
 const SubmitContext = createContext<SubmitContextData>({
   data: { ...DEFAULT_SUBMIT_DATA },

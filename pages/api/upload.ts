@@ -51,7 +51,6 @@ handler.use(upload.single('file'));
 
 handler.post((_, res: NextApiResponse<UploadResponseData>) => {
   const str = fs.readFileSync(resolve(storePath, filename), 'utf8');
-  console.log(matter(str));
   const { content, data } = matter(str);
   res.statusCode = 200;
   res.status(200).json({ success: true, data, content, name: filename, originName: filename.split('-')[1] });

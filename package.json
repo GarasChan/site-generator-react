@@ -10,6 +10,7 @@
   "dependencies": {
     "@arco-design/web-react": "^2.25.1",
     "@types/multer": "^1.4.7",
+    "axios": "^0.24.0",
     "gray-matter": "^4.0.3",
     "lodash-es": "^4.17.21",
     "md-editor-rt": "^1.2.3",
@@ -19,13 +20,15 @@
     "next-with-less": "^2.0.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "swr": "^1.1.0"
+    "swr": "^1.1.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/classnames": "^2.3.1",
     "@types/lodash-es": "^4.17.5",
     "@types/node": "16.11.10",
     "@types/react": "17.0.37",
+    "@types/uuid": "^8.3.3",
     "classnames": "^2.3.1",
     "eslint": "7",
     "eslint-config-next": "12.0.4",

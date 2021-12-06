@@ -3,8 +3,8 @@ import { Button, Empty, Message, Modal } from '@arco-design/web-react';
 import classNames from 'classnames';
 import { default as MdEditor } from 'md-editor-rt';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
-import 'md-editor-rt/lib/style.css';
 import SubmitContext from './context';
+import 'md-editor-rt/lib/style.css';
 
 enum EditorMode {
   preview = 'preview',
@@ -16,7 +16,7 @@ export interface EditorProps {
 }
 
 function isEmpty(text: string) {
-  return text.trim() !== '';
+  return text.trim() === '';
 }
 
 // https://github.com/imzbf/md-editor-rt
@@ -24,7 +24,7 @@ const Editor = (props: EditorProps) => {
   const { data, goNext, goBack, updateData } = useContext(SubmitContext);
   const { hide } = props;
   const [text, setText] = useState(data.content);
-  const [mode, setMode] = useState(isEmpty(text) ? EditorMode.preview : EditorMode.edit);
+  const [mode, setMode] = useState(isEmpty(text) ? EditorMode.edit : EditorMode.preview);
 
   const handleChange = useCallback((val: string) => {
     setText(val);
@@ -67,6 +67,7 @@ const Editor = (props: EditorProps) => {
   useEffect(() => {
     if (data.content !== text) {
       setText(data.content);
+      setMode(isEmpty(data.content) ? EditorMode.edit : EditorMode.preview);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.content]);
@@ -105,9 +106,9 @@ const Editor = (props: EditorProps) => {
           onChange={handleChange}
         />
       ) : isEmpty(text) ? (
-        <MdEditor key={mode} modelValue={text} previewOnly />
-      ) : (
         <Empty />
+      ) : (
+        <MdEditor key={mode} modelValue={text} previewOnly />
       )}
     </div>
   );
