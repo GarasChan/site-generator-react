@@ -4,7 +4,7 @@ import { ConfigResponseData } from '../../pages/api/config';
 import classNames from 'classnames';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
 import SubmitContext from './context';
-import useConfig from '../../hooks/useConfig';
+import useRequest from '../../hooks/useRequest';
 
 const { Item } = Form;
 
@@ -15,8 +15,8 @@ export interface MetaProps {
 const Meta = (props: MetaProps) => {
   const { data: value, goNext, goBack, updateData } = useContext(SubmitContext);
   const { hide } = props;
-  const { config } = useConfig();
-  const { categories = [], tags = [] } = config;
+  const result = useRequest<ConfigResponseData>({ url: '/api/config' });
+  const { categories = [], tags = [] } = result.data || {};
 
   const handleSubmit = (values: any) => {
     updateData({ ...value, data: values });

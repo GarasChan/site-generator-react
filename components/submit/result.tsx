@@ -1,31 +1,29 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Button, Result as ArcoResult, Spin } from '@arco-design/web-react';
-import classNames from 'classnames';
-import useSubmitFile from '../../hooks/useSubmitFile';
 import SubmitContext from './context';
+import useRequest from '../../hooks/useRequest';
 
-export interface MetaProps {
-  hide?: boolean;
-}
-
-const Result = (props: MetaProps) => {
+const Result = () => {
   const { data: value } = useContext(SubmitContext);
-  const { hide } = props;
-  const { data, loading, error } = useSubmitFile(value.name!, value.data, value.content);
+  const { data, error, loading, retry } = useRequest({
+    url: `/api/update?name=${value.name}`,
+    method: 'POST',
+    data: { data: value.data, content: value.content }
+  });
 
   return (
-    <div className={classNames({ hidden: hide })}>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
       {loading ? (
         <Spin dot />
       ) : (
         <ArcoResult
           status={error ? 'error' : 'success'}
-          title="提交成功"
-          subTitle={error ? JSON.stringify(error) : ''}
+          title={error ? '提交失败' : '提交成功'}
+          subTitle={error ? error.message : ''}
           extra={
             error
               ? [
-                  <Button key="again" type="secondary">
+                  <Button key="again" type="secondary" onClick={retry}>
                     重试
                   </Button>
                 ]

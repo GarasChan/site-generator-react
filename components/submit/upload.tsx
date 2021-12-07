@@ -24,7 +24,7 @@ const Upload = (props: UploadProps) => {
   const handleNew = useCallback(() => {
     if (!data.name) {
       const id = v4();
-      updateData({ ...DEFAULT_SUBMIT_DATA, id, name: `${id}.md` });
+      updateData({ ...DEFAULT_SUBMIT_DATA, id, name: `${Date.now()}-${id}.md` });
     }
     goNext();
   }, [data.name, goNext, updateData]);

@@ -39,9 +39,9 @@ const Submit = () => {
           <>
             <Editor hide={current !== 2} />
             <Meta hide={current !== 3} />
-            <Result hide={current !== 4} />
           </>
         )}
+        {current === 4 && <Result />}
       </div>
     </SubmitContext.Provider>
   );
