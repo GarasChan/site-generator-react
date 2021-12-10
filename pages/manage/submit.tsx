@@ -6,6 +6,7 @@ import Upload from '../../components/submit/upload';
 import Editor from '../../components/submit/editor';
 import Meta from '../../components/submit/meta';
 import Result from '../../components/submit/result';
+import { MainCenter } from '../../components/layout/main-center';
 
 const { Step } = Steps;
 
@@ -27,22 +28,24 @@ const Submit = () => {
 
   return (
     <SubmitContext.Provider value={{ data, updateData, goBack, goNext }}>
-      <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-        <Steps type="arrow" size="small" current={current} style={{ marginBottom: 24 }}>
-          <Step title="上传文件" />
-          <Step title="文档正文" />
-          <Step title="文档信息" />
-          <Step title="提交审核" />
-        </Steps>
-        <Upload hide={current !== 1} />
-        {data && (
-          <>
-            <Editor hide={current !== 2} />
-            <Meta hide={current !== 3} />
-          </>
-        )}
-        {current === 4 && <Result />}
-      </div>
+      <MainCenter>
+        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
+          <Steps type="arrow" size="small" current={current} style={{ marginBottom: 24 }}>
+            <Step title="上传文件" />
+            <Step title="文档正文" />
+            <Step title="文档信息" />
+            <Step title="提交审核" />
+          </Steps>
+          <Upload hide={current !== 1} />
+          {data && (
+            <>
+              <Editor hide={current !== 2} />
+              <Meta hide={current !== 3} />
+            </>
+          )}
+          {current === 4 && <Result />}
+        </div>
+      </MainCenter>
     </SubmitContext.Provider>
   );
 };
