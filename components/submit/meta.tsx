@@ -33,7 +33,7 @@ const Meta = (props: MetaProps) => {
       initialValues={value?.data}
       onSubmit={handleSubmit}
     >
-      <Item label="标题" field="title">
+      <Item label="标题" field="title" required>
         <Input />
       </Item>
       <Item label="分类" field="categories" required>
@@ -56,17 +56,6 @@ const Meta = (props: MetaProps) => {
       </Item>
     </Form>
   );
-};
-
-export const getStaticProps = async () => {
-  const res = await fetch('/api/config');
-  const config: ConfigResponseData = await res.json();
-
-  return {
-    props: {
-      config
-    }
-  };
 };
 
 export default Meta;
