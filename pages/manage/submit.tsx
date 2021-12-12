@@ -1,6 +1,6 @@
-import React, { ReactElement, useCallback, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Steps } from '@arco-design/web-react';
-import SubmitContext, { DEFAULT_SUBMIT_DATA, SubmitContextData, SubmitData } from '../../components/submit/context';
+import SubmitContext, { SubmitData } from '../../components/submit/context';
 import Main from '../../components/layout/main';
 import Upload from '../../components/submit/upload';
 import Editor from '../../components/submit/editor';
@@ -11,23 +11,29 @@ import { MainCenter } from '../../components/layout/main-center';
 const { Step } = Steps;
 
 const Submit = () => {
-  const [data, setData] = useState<SubmitContextData['data']>(DEFAULT_SUBMIT_DATA);
+  const [data, setData] = useState<SubmitData | null>(null);
   const [current, setCurrent] = useState<number>(1);
 
-  const goNext = useCallback(() => {
-    setCurrent((step) => step + 1);
+  const go = useCallback((step: number) => {
+    setCurrent(step);
   }, []);
 
-  const goBack = useCallback(() => {
-    setCurrent((step) => step - 1);
-  }, []);
-
-  const updateData = useCallback((val: SubmitData) => {
+  const updateData = useCallback((val: SubmitData | null) => {
     setData(val);
   }, []);
 
+  useEffect(() => {
+    window.onbeforeunload = function (e) {
+      e = e || window.event;
+      if (e) {
+        e.returnValue = '关闭提示';
+      }
+      return '关闭提示';
+    };
+  }, []);
+
   return (
-    <SubmitContext.Provider value={{ data, updateData, goBack, goNext }}>
+    <SubmitContext.Provider value={{ data, updateData, go }}>
       <MainCenter>
         <div style={{ maxWidth: 1440, margin: '0 auto' }}>
           <Steps type="arrow" size="small" current={current} style={{ marginBottom: 24 }}>

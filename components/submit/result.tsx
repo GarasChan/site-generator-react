@@ -1,15 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Button, Result as ArcoResult, Spin } from '@arco-design/web-react';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
 
 const Result = () => {
-  const { data: value } = useContext(SubmitContext);
-  const { data, error, loading, retry } = useRequest({
-    url: `/api/update?name=${value.name}`,
+  const { data, updateData, go } = useContext(SubmitContext);
+  const {
+    data: result,
+    error,
+    loading,
+    retry
+  } = useRequest({
+    url: '/api/upload',
     method: 'POST',
-    data: { data: value.data, content: value.content }
+    data
   });
+
+  const handleFirst = useCallback(() => {
+    updateData(null);
+    go(1);
+  }, [go, updateData]);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -23,11 +33,15 @@ const Result = () => {
           extra={
             error
               ? [
-                  <Button key="again" type="secondary" onClick={retry}>
-                    重试
+                  <Button key="again" type="primary" onClick={retry}>
+                    重新提交
                   </Button>
                 ]
-              : []
+              : [
+                  <Button key="again" type="primary" onClick={handleFirst}>
+                    继续提交
+                  </Button>
+                ]
           }
         />
       )}

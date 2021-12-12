@@ -1,59 +1,45 @@
+import { FileInfo, FileStatusType } from './../../utils/stats';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
-import matter from 'gray-matter';
+import { stringify } from 'gray-matter';
 import nextConnect from 'next-connect';
-import multer from 'multer';
 import { resolve } from 'path';
+import appConfig from '../../config/app-config.json';
+import statsUtil from '../../utils/stats';
+import dayjs from 'dayjs';
 
-export type UploadResponseData = {
-  data: Record<string, any>;
-  content: string;
+export interface UploadResponseData extends Partial<FileInfo> {
   success?: boolean;
-  name?: string;
-  originName?: string;
-};
-
-// first we need to disable the default body parser
-export const config = {
-  api: {
-    bodyParser: false
-  }
-};
-
-const storePath = resolve(process.cwd(), 'temp');
-let filename = '';
-
-if (!fs.existsSync(storePath)) {
-  fs.mkdirSync(storePath);
+  filename?: string;
+  content: string;
 }
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: storePath,
-    filename: (_, file, cb) => {
-      filename = `${Date.now()}-${file.originalname}`;
-      cb(null, filename);
-    }
-  }),
-  preservePath: true
-});
+const storePath = resolve(process.cwd(), appConfig.storeDirName);
 
 const handler = nextConnect({
   onError(error, _, res: NextApiResponse<UploadResponseData>) {
-    res
-      .status(501)
-      .json({ success: false, content: error.message, data: {}, name: filename, originName: filename.split('-')[0] });
+    console.log(error);
+    res.status(501).json({ success: false, content: error.message });
   }
 });
 
-handler.use(upload.single('file'));
-
-handler.post((_, res: NextApiResponse<UploadResponseData>) => {
-  const str = fs.readFileSync(resolve(storePath, filename), 'utf8');
-  const { content, data } = matter(str);
-  res.statusCode = 200;
-  res.status(200).json({ success: true, data, content, name: filename, originName: filename.split('-')[1] });
+handler.post((req: NextApiRequest, res: NextApiResponse<UploadResponseData>) => {
+  const { id, filename, data, content } = req.body;
+  const file = stringify(content, data);
+  const serverFilename = `${id}.md`;
+  fs.writeFileSync(resolve(storePath, serverFilename), file, { encoding: 'utf-8' });
+  const time = dayjs().format('YYYY-MM-DD HH:mm');
+  const info = {
+    originFilename: filename,
+    createTime: time,
+    updateTime: time,
+    status: FileStatusType.UPLOADED,
+    categories: data.categories,
+    tags: data.tags
+  };
+  statsUtil.write(serverFilename, info);
+  res.status(200).json({ success: true, content: file, ...info, filename: serverFilename });
 });
 
 export default handler;

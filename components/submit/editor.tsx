@@ -3,7 +3,7 @@ import { Button, Empty, Message, Modal } from '@arco-design/web-react';
 import classNames from 'classnames';
 import { default as MdEditor } from 'md-editor-rt';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
-import SubmitContext from './context';
+import SubmitContext, { SubmitData } from './context';
 import 'md-editor-rt/lib/style.css';
 
 enum EditorMode {
@@ -21,10 +21,11 @@ function isEmpty(text: string) {
 
 // https://github.com/imzbf/md-editor-rt
 const Editor = (props: EditorProps) => {
-  const { data, goNext, goBack, updateData } = useContext(SubmitContext);
+  const { data, go, updateData } = useContext(SubmitContext);
+  const { content } = data as SubmitData;
   const { hide } = props;
-  const [text, setText] = useState(data.content);
-  const [mode, setMode] = useState(isEmpty(text) ? EditorMode.edit : EditorMode.preview);
+  const [text, setText] = useState(content);
+  const [mode, setMode] = useState(EditorMode.preview);
 
   const handleChange = useCallback((val: string) => {
     setText(val);
@@ -35,24 +36,24 @@ const Editor = (props: EditorProps) => {
   }, []);
 
   const exit = useCallback(() => {
-    if (data.content !== text) {
+    if (content !== text) {
       Modal.confirm({
         title: '确认退出编辑',
         content: '退出会重置当前变更，是否继续?',
         okText: '继续',
         onOk: () => {
-          setText(data.content);
+          setText(content);
           setMode(EditorMode.preview);
         }
       });
     } else {
       setMode(EditorMode.preview);
     }
-  }, [data.content, text]);
+  }, [content, text]);
 
   const save = useCallback(() => {
     setMode(EditorMode.preview);
-    updateData({ ...data, content: text });
+    updateData({ ...data!, content: text });
   }, [data, text, updateData]);
 
   const hadleNext = useCallback(() => {
@@ -61,23 +62,20 @@ const Editor = (props: EditorProps) => {
       setMode(EditorMode.edit);
       return;
     }
-    goNext();
-  }, [goNext, text]);
-
-  useEffect(() => {
-    if (data.content !== text) {
-      setText(data.content);
-      setMode(isEmpty(data.content) ? EditorMode.edit : EditorMode.preview);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.content]);
+    go(3);
+  }, [go, text]);
 
   return (
     <div style={{ position: 'relative' }} className={classNames({ hidden: hide })}>
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'flex-end' }}>
         {mode === EditorMode.preview ? (
           <>
-            <Button style={{ marginRight: 'auto' }} onClick={goBack}>
+            <Button
+              style={{ marginRight: 'auto' }}
+              onClick={() => {
+                go(1);
+              }}
+            >
               <IconLeft />
               <span>上一步</span>
             </Button>

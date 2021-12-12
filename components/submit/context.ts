@@ -1,26 +1,25 @@
 import { UploadResponseData } from './../../pages/api/upload';
 import { createContext } from 'react';
 
-export interface SubmitData extends UploadResponseData {
+export interface SubmitData {
   id: string;
+  data: Record<string, any>;
+  content: string;
+  filename: string;
 }
 
 export interface SubmitContextData {
-  data: SubmitData;
-  updateData: (val: SubmitData) => void;
-  goNext: () => void;
-  goBack: () => void;
+  data: SubmitData | null;
+  updateData: (val: SubmitData | null) => void;
+  go: (step: number) => void;
 }
 
 const noop = () => {};
 
-export const DEFAULT_SUBMIT_DATA = { id: '', data: {}, content: '' };
-
 const SubmitContext = createContext<SubmitContextData>({
-  data: { ...DEFAULT_SUBMIT_DATA },
-  goNext: noop,
-  goBack: noop,
-  updateData: (val: SubmitData) => {}
+  data: null,
+  go: noop,
+  updateData: noop
 });
 
 export default SubmitContext;

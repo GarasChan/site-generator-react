@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Button, Form, Input, Select } from '@arco-design/web-react';
 import { ConfigResponseData } from '../../pages/api/config';
 import classNames from 'classnames';
@@ -13,38 +13,71 @@ export interface MetaProps {
 }
 
 const Meta = (props: MetaProps) => {
-  const { data: value, goNext, goBack, updateData } = useContext(SubmitContext);
+  const { data, go, updateData } = useContext(SubmitContext);
   const { hide } = props;
   const result = useRequest<ConfigResponseData>({ url: '/api/config' });
   const { categories = [], tags = [] } = result.data || {};
 
-  const handleSubmit = (values: any) => {
-    updateData({ ...value, data: values });
-    goNext();
-  };
+  const handleSubmit = useCallback(
+    (values: any) => {
+      updateData({ ...data!, data: values });
+      go(4);
+    },
+    [data, go, updateData]
+  );
 
   return (
     <Form
-      key={value.id}
       className={classNames({ hidden: hide })}
       style={{ maxWidth: 600, margin: 'auto' }}
       layout="vertical"
       requiredSymbol={{ position: 'end' }}
-      initialValues={value?.data}
+      initialValues={data?.data}
       onSubmit={handleSubmit}
     >
-      <Item label="标题" field="title">
+      <Item
+        label="标题"
+        field="title"
+        rules={[
+          {
+            required: true,
+            message: '请输入标题'
+          }
+        ]}
+      >
         <Input />
       </Item>
-      <Item label="分类" field="categories" required>
+      <Item
+        label="分类"
+        field="categories"
+        rules={[
+          {
+            required: true,
+            message: '请选择分类'
+          }
+        ]}
+      >
         <Select mode="multiple" options={categories.map((item: string) => ({ label: item, value: item }))} />
       </Item>
-      <Item label="标签" field="tags" required>
+      <Item
+        label="标签"
+        field="tags"
+        rules={[
+          {
+            required: true,
+            message: '请选择标签'
+          }
+        ]}
+      >
         <Select mode="multiple" options={tags.map((item: string) => ({ label: item, value: item }))} />
       </Item>
       <Item>
-        <div style={{ display: 'flex' }}>
-          <Button onClick={goBack}>
+        <div style={{ display: 'flex', marginTop: 24 }}>
+          <Button
+            onClick={() => {
+              go(2);
+            }}
+          >
             <IconLeft />
             <span>上一步</span>
           </Button>
@@ -56,17 +89,6 @@ const Meta = (props: MetaProps) => {
       </Item>
     </Form>
   );
-};
-
-export const getStaticProps = async () => {
-  const res = await fetch('/api/config');
-  const config: ConfigResponseData = await res.json();
-
-  return {
-    props: {
-      config
-    }
-  };
 };
 
 export default Meta;
