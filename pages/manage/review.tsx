@@ -47,15 +47,8 @@ const Review = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>
     <MainCenter>
       <List
         hoverable
-        dataSource={Object.entries(data).map(([filename, info]) => ({ ...info, filename }))}
-        render={({
-          filename,
-          originFilename,
-          categories,
-          tags,
-          createTime,
-          updateTime
-        }: FileInfo & { filename: string }) => (
+        dataSource={data}
+        render={({ filename, originFilename, categories, tags, createTime, updateTime }: FileInfo) => (
           <Item
             key={filename}
             actions={[

@@ -9,6 +9,8 @@ export enum FileStatusType {
 }
 
 export interface FileInfo {
+  author: string;
+  filename: string;
   originFilename: string;
   createTime: string;
   updateTime: string;
@@ -20,28 +22,25 @@ export interface FileInfo {
 const { storeDirName, storeStatsName } = appConfig;
 const statsPath = resolve(process.cwd(), storeDirName, `${storeStatsName}.json`);
 
-function getStats(): Record<string, FileInfo> {
+function getStats(): FileInfo[] {
   const stats = fs.readFileSync(statsPath, { encoding: 'utf-8' });
   try {
     return JSON.parse(stats);
   } catch (error) {
-    return {};
+    return [];
   }
 }
 
 function writeStats(filename: string, fileInfo: Partial<FileInfo>) {
-  const statsJson = getStats();
-  const current = statsJson[filename] ?? {};
-  if (current) {
-    // 兼容手动书写 md 的情况
-    const { updateTime } = fileInfo;
-    if (!current.createTime && updateTime) {
-      current.createTime = updateTime;
-    }
+  const stats = getStats();
+  const index = stats.findIndex((stat) => stat.filename === filename);
+  if (index > -1) {
+    Object.assign(stats[index], fileInfo);
+  } else {
+    stats.push(fileInfo as FileInfo);
   }
-  Object.assign(current, fileInfo);
-  statsJson[filename] = current;
-  fs.writeFileSync(statsPath, JSON.stringify(statsJson, null, 2));
+
+  fs.writeFileSync(statsPath, JSON.stringify(stats, null, 2));
 }
 
 const statsUtil = {

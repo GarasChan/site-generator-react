@@ -1,4 +1,5 @@
 {
   "storeDirName": "temp",
-  "storeStatsName": "stats"
+  "storeStatsName": "stats",
+  "dbPath": "db"
 }

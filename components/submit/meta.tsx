@@ -1,10 +1,11 @@
-import React, { useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { Button, Form, Input, Select } from '@arco-design/web-react';
 import { ConfigResponseData } from '../../pages/api/config';
 import classNames from 'classnames';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
+import { Author } from '../../pages/api/author';
 
 const { Item } = Form;
 
@@ -15,8 +16,9 @@ export interface MetaProps {
 const Meta = (props: MetaProps) => {
   const { data, go, updateData } = useContext(SubmitContext);
   const { hide } = props;
-  const result = useRequest<ConfigResponseData>({ url: '/api/config' });
-  const { categories = [], tags = [] } = result.data || {};
+  const config = useRequest<ConfigResponseData>({ url: '/api/config' });
+  const author = useRequest<Author[]>({ url: '/api/author' });
+  const { categories = [], tags = [] } = config.data || {};
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -41,11 +43,23 @@ const Meta = (props: MetaProps) => {
         rules={[
           {
             required: true,
-            message: '请输入标题'
+            message: '标题不能为空'
           }
         ]}
       >
-        <Input />
+        <Input placeholder="请输入标题" />
+      </Item>
+      <Item
+        label="作者"
+        field="author"
+        rules={[
+          {
+            required: true,
+            message: '作者不能为空'
+          }
+        ]}
+      >
+        <Select options={author.data?.map((a) => a.name)} placeholder="请选择作者" />
       </Item>
       <Item
         label="分类"
@@ -53,11 +67,15 @@ const Meta = (props: MetaProps) => {
         rules={[
           {
             required: true,
-            message: '请选择分类'
+            message: '分类不能为空'
           }
         ]}
       >
-        <Select mode="multiple" options={categories.map((item: string) => ({ label: item, value: item }))} />
+        <Select
+          mode="multiple"
+          options={categories.map((item: string) => ({ label: item, value: item }))}
+          placeholder="请选择分类"
+        />
       </Item>
       <Item
         label="标签"
@@ -65,11 +83,15 @@ const Meta = (props: MetaProps) => {
         rules={[
           {
             required: true,
-            message: '请选择标签'
+            message: '标签不能为空'
           }
         ]}
       >
-        <Select mode="multiple" options={tags.map((item: string) => ({ label: item, value: item }))} />
+        <Select
+          mode="multiple"
+          options={tags.map((item: string) => ({ label: item, value: item }))}
+          placeholder="请选择标签"
+        />
       </Item>
       <Item>
         <div style={{ display: 'flex', marginTop: 24 }}>

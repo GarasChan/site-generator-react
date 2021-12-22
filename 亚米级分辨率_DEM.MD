@@ -87,5 +87,3 @@ https://apps.nationalmap.gov/downloader/#/
 U.S. Geological Survey, 20210622, USGS 1 Meter 10 x44y465 OR_RogueSiskiyouNF_2019_B19: U.S. Geological Survey.
 
 What is 3DEP.https://www.usgs.gov/core-science-systems/ngp/3dep/what-is-3dep?qt-science_support_page_related_con=0#qt-science_support_page_related_con
-
-![](https://gitee.com/kitmyfaceplease/image_upload/raw/master/image/20211117231958.png)

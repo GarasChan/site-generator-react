@@ -1081,14 +1081,9 @@ data-uri-to-buffer@3.0.1:
   resolved "https://registry.npmmirror.com/data-uri-to-buffer/download/data-uri-to-buffer-3.0.1.tgz"
   integrity sha1-WUuJc5OMW8LDMEZTV4U0GrxPNjY=
 
-dayjs@^1.10.5:
+dayjs@^1.10.5, dayjs@^1.10.7:
   version "1.10.7"
   resolved "https://registry.nlark.com/dayjs/download/dayjs-1.10.7.tgz?cache=0&sync_timestamp=1631266519235&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fdayjs%2Fdownload%2Fdayjs-1.10.7.tgz"
-  integrity sha1-LPX5Gt0oEWdIRAhmoKHSbzps5Gg=
-
-dayjs@^1.10.7:
-  version "1.10.7"
-  resolved "https://registry.nlark.com/dayjs/download/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
   integrity sha1-LPX5Gt0oEWdIRAhmoKHSbzps5Gg=
 
 debug@2, debug@^2.6.9:
@@ -2309,6 +2304,13 @@ loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lowdb@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.nlark.com/lowdb/download/lowdb-3.0.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Flowdb%2Fdownload%2Flowdb-3.0.0.tgz#c10ab4e7eb86f1cbe255e35e60ffb0c6f42049e0"
+  integrity sha1-wQq05+uG8cviVeNeYP+wxvQgSeA=
+  dependencies:
+    steno "^2.1.0"
+
 lru-cache@^6.0.0:
   version "6.0.0"
   resolved "https://registry.nlark.com/lru-cache/download/lru-cache-6.0.0.tgz"
@@ -3383,6 +3385,11 @@ stacktrace-parser@0.1.10:
   version "1.5.0"
   resolved "https://registry.nlark.com/statuses/download/statuses-1.5.0.tgz"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
+
+steno@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.nlark.com/steno/download/steno-2.1.0.tgz#05a9c378ce42ed04f642cda6fcb41787a10e4e33"
+  integrity sha1-BanDeM5C7QT2Qs2m/LQXh6EOTjM=
 
 stream-browserify@3.0.0:
   version "3.0.0"
