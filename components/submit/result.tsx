@@ -11,7 +11,7 @@ const Result = () => {
     loading,
     retry
   } = useRequest({
-    url: '/api/upload',
+    url: '/article',
     method: 'POST',
     data
   });

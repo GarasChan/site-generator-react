@@ -1,5 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import { useState, useEffect, useCallback } from 'react';
+import request from '../utils/request';
 import useRefCallback from './useRefCallback';
 
 export interface UsePostData<T> {
@@ -26,13 +27,12 @@ function useRequest<T>(config: AxiosRequestConfig): UsePostData<T> {
     setLoading(false);
   }, []);
 
-  const request = useRefCallback(() => {
+  const get = useRefCallback(() => {
     setLoading(true);
-    axios(config)
+    request(config)
       .then((res) => {
-        console.log(res.data);
         if (res.data.success === false) {
-          onError(new Error(res.data.content ?? ''));
+          onError(new Error(res.data.data ?? ''));
           return;
         }
         onSuccess(res.data);
@@ -43,14 +43,14 @@ function useRequest<T>(config: AxiosRequestConfig): UsePostData<T> {
   });
 
   useEffect(() => {
-    request();
-  }, [request]);
+    get();
+  }, [get]);
 
   return {
     loading,
     data: responseData,
     error,
-    retry: request
+    retry: get
   };
 }
 

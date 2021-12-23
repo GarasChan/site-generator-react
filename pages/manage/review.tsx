@@ -3,12 +3,17 @@ import React, { MouseEventHandler, ReactElement, useCallback, useEffect, useMemo
 import Main from '../../components/layout/main';
 import { MainCenter } from '../../components/layout/main-center';
 import { InferGetServerSidePropsType } from 'next';
-import statsUtil, { FileInfo } from '../../utils/stats';
 import { IconCalendarClock, IconHistory } from '@arco-design/web-react/icon';
+import useRequest from '../../hooks/useRequest';
+import request from '../../utils/request';
+import { Article } from '../../utils/ArticleUtil';
+import { ArticleResponse } from '../api/article';
 
 const { Item } = List;
 
-const Review = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Review = () => {
+  const { data, loading } = useRequest<ArticleResponse>({ url: '/article' });
+
   const renderTitle = useCallback((title: string, categories?: string[]) => {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -45,10 +50,8 @@ const Review = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>
 
   return (
     <MainCenter>
-      <List
-        hoverable
-        dataSource={data}
-        render={({ filename, originFilename, categories, tags, createTime, updateTime }: FileInfo) => (
+      <List loading={loading} hoverable>
+        {data?.data.map(({ filename, originFilename, categories, tags, createTime, updateTime }: Article) => (
           <Item
             key={filename}
             actions={[
@@ -97,22 +100,14 @@ const Review = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>
               )}
             </Space>
           </Item>
-        )}
-      />
+        ))}
+      </List>
     </MainCenter>
   );
 };
 
 Review.getLayout = function getLayout(page: ReactElement) {
   return <Main>{page}</Main>;
-};
-
-export const getServerSideProps = async () => {
-  return {
-    props: {
-      data: statsUtil.get()
-    }
-  };
 };
 
 export default Review;
