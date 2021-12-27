@@ -31,10 +31,7 @@ function useRequest<T>(config: AxiosRequestConfig): UsePostData<T> {
     setLoading(true);
     request(config)
       .then((res) => {
-        if (res.data.success === false) {
-          onError(new Error(res.data.data ?? ''));
-          return;
-        }
+        console.log('res.data', res.data);
         onSuccess(res.data);
       })
       .catch((err) => {

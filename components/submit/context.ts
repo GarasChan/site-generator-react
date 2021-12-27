@@ -1,4 +1,3 @@
-import { UploadResponseData } from './../../pages/api/upload';
 import { createContext } from 'react';
 
 export interface SubmitData {

@@ -1,16 +1,35 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { JSONFileSync, LowSync } from 'lowdb';
+import appConfig from '../../config/app-config.json';
+import { resolvePath } from '../../utils';
+import nextConnect from 'next-connect';
 
 export interface ConfigResponseData {
-  categories: string[];
   tags: string[];
+  categories: string[];
 }
 
-// 分类
-const categories = ['工具', '数据', '教程', '资源'];
-// 标签
-const tags = ['遥感数据', 'GIS 数据', '卫星数据', '学科数据'];
-
-export default function handler(_: NextApiRequest, res: NextApiResponse<ConfigResponseData>) {
-  res.status(200).json({ categories, tags });
+export interface ConfigResponseError {
+  error?: any;
+  message?: string;
 }
+
+const tagDb = new LowSync<string[]>(new JSONFileSync(resolvePath([appConfig.dbPath, 'tag.json'])));
+const categoryDb = new LowSync<string[]>(new JSONFileSync(resolvePath([appConfig.dbPath, 'category.json'])));
+
+const handler = nextConnect({
+  onError(error, _, res: NextApiResponse<ConfigResponseError>) {
+    res.status(501).json({ message: error.message, error });
+  }
+});
+
+handler.get((_: NextApiRequest, res: NextApiResponse<ConfigResponseData>) => {
+  tagDb.read();
+  categoryDb.read();
+  const tags = tagDb.data ? tagDb.data : [];
+  const categories = categoryDb.data ? categoryDb.data : [];
+  res.status(200).json({ tags, categories });
+});
+
+export default handler;

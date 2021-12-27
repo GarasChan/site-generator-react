@@ -1,18 +1,15 @@
-import { Avatar, Button, Link, List, Message, Space, Tag, Tooltip } from '@arco-design/web-react';
-import React, { MouseEventHandler, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { Avatar, Button, List, Message, Space, Tag, Tooltip } from '@arco-design/web-react';
+import React, { ReactElement, useCallback } from 'react';
 import Main from '../../components/layout/main';
 import { MainCenter } from '../../components/layout/main-center';
-import { InferGetServerSidePropsType } from 'next';
 import { IconCalendarClock, IconHistory } from '@arco-design/web-react/icon';
 import useRequest from '../../hooks/useRequest';
-import request from '../../utils/request';
-import { Article } from '../../utils/ArticleUtil';
-import { ArticleResponse } from '../api/article';
+import { Article, ArticleResponseData } from '../api/article';
 
 const { Item } = List;
 
 const Review = () => {
-  const { data, loading } = useRequest<ArticleResponse>({ url: '/article' });
+  const { data, loading } = useRequest<ArticleResponseData>({ url: '/article' });
 
   const renderTitle = useCallback((title: string, categories?: string[]) => {
     return (

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
-import { Author } from '../../utils/AutherUtil';
+import { AuthorResponseData } from '../../pages/api/author';
 
 const { Item } = Form;
 
@@ -16,9 +16,9 @@ export interface MetaProps {
 const Meta = (props: MetaProps) => {
   const { data, go, updateData } = useContext(SubmitContext);
   const { hide } = props;
-  const config = useRequest<ConfigResponseData>({ url: '/config' });
-  const authors = useRequest<Author[]>({ url: '/author' });
-  const { categories = [], tags = [] } = config.data || {};
+  const { data: config } = useRequest<ConfigResponseData>({ url: '/config' });
+  const { data: author } = useRequest<AuthorResponseData>({ url: '/author' });
+  const { categories = [], tags = [] } = config || {};
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -27,7 +27,7 @@ const Meta = (props: MetaProps) => {
     },
     [data, go, updateData]
   );
-
+  console.log('data?.data', data?.data);
   return (
     <Form
       className={classNames({ hidden: hide })}
@@ -60,7 +60,7 @@ const Meta = (props: MetaProps) => {
         ]}
       >
         <Select
-          options={authors.data?.map((author) => ({ label: author.name, value: author.id }))}
+          options={author?.data.map((author) => ({ label: author.name, value: author.id }))}
           placeholder="请选择作者"
         />
       </Item>
