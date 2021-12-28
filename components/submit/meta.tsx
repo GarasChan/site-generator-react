@@ -1,11 +1,10 @@
 import { useCallback, useContext } from 'react';
 import { Button, Form, Input, Select } from '@arco-design/web-react';
-import { ConfigResponseData } from '../../pages/api/config';
 import classNames from 'classnames';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
-import { AuthorResponseData } from '../../pages/api/author';
+import { AuthorResponseError, AuthorResponseSuccess, ConfigResponseError, ConfigResponseSuccess } from '../../types';
 
 const { Item } = Form;
 
@@ -16,9 +15,9 @@ export interface MetaProps {
 const Meta = (props: MetaProps) => {
   const { data, go, updateData } = useContext(SubmitContext);
   const { hide } = props;
-  const { data: config } = useRequest<ConfigResponseData>({ url: '/config' });
-  const { data: author } = useRequest<AuthorResponseData>({ url: '/author' });
-  const { categories = [], tags = [] } = config || {};
+  const { data: config } = useRequest<ConfigResponseSuccess, ConfigResponseError>({ url: '/config' });
+  const { data: author } = useRequest<AuthorResponseSuccess, AuthorResponseError>({ url: '/author' });
+  const { categories = [], tags = [] } = config?.data || {};
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -27,7 +26,7 @@ const Meta = (props: MetaProps) => {
     },
     [data, go, updateData]
   );
-  console.log('data?.data', data?.data);
+
   return (
     <Form
       className={classNames({ hidden: hide })}

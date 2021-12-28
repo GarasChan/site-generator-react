@@ -4,20 +4,7 @@ import nextConnect from 'next-connect';
 import { JSONFileSync, LowSync } from 'lowdb';
 import { resolve } from 'path';
 import appConfig from '../../config/app-config.json';
-
-export interface Author {
-  id: string;
-  name: string;
-  descImg: string;
-}
-export interface AuthorResponseData {
-  data: Author[];
-}
-
-export interface AuthorResponseError {
-  error?: any;
-  message?: string;
-}
+import { Author, AuthorResponseData } from '../../types';
 
 const db = new LowSync<Author[]>(new JSONFileSync(resolve(process.cwd(), appConfig.dbPath, 'author.json')));
 
@@ -40,7 +27,7 @@ export const writeAuthor = (author: Partial<Author>) => {
   } else {
     const current = db.data.find((item) => item.id === author.id);
     if (!current) {
-      db.data.push(author as Author);
+      db.data.unshift(author as Author);
     } else {
       Object.assign(current, author);
     }
@@ -49,13 +36,13 @@ export const writeAuthor = (author: Partial<Author>) => {
 };
 
 const handler = nextConnect({
-  onError(error, _, res: NextApiResponse<AuthorResponseError>) {
-    res.status(501).json({ error, message: error.message });
+  onError(error, _, res: NextApiResponse<AuthorResponseData>) {
+    res.status(501).json({ success: false, message: error.message });
   }
 });
 
 handler.get((req: NextApiRequest, res: NextApiResponse<AuthorResponseData>) => {
-  res.status(200).json({ data: getAuthor(req.query.id as string) });
+  res.status(200).json({ success: true, data: getAuthor(req.query.id as string) });
 });
 
 export default handler;

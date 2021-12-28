@@ -3,25 +3,25 @@ import { useState, useEffect, useCallback } from 'react';
 import request from '../utils/request';
 import useRefCallback from './useRefCallback';
 
-export interface UsePostData<T> {
+export interface UsePostData<S, E> {
   loading: boolean;
-  data: T | null;
-  error: Error | null;
+  data: S | null;
+  error: E | null;
   retry: () => void;
 }
 
-function useRequest<T>(config: AxiosRequestConfig): UsePostData<T> {
+function useRequest<S, E = any>(config: AxiosRequestConfig): UsePostData<S, E> {
   const [loading, setLoading] = useState(false);
-  const [responseData, setResponseData] = useState<T | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [responseData, setResponseData] = useState<S | null>(null);
+  const [error, setError] = useState<E | null>(null);
 
-  const onError = useCallback((err: Error) => {
+  const onError = useCallback((err: E) => {
     setError(err);
     setResponseData(null);
     setLoading(false);
   }, []);
 
-  const onSuccess = useCallback((data: T) => {
+  const onSuccess = useCallback((data: S) => {
     setError(null);
     setResponseData(data);
     setLoading(false);
@@ -32,10 +32,14 @@ function useRequest<T>(config: AxiosRequestConfig): UsePostData<T> {
     request(config)
       .then((res) => {
         console.log('res.data', res.data);
+        if (!res.data.success) {
+          onError(res.data);
+          return;
+        }
         onSuccess(res.data);
       })
       .catch((err) => {
-        onError(err);
+        onError(err.response.data);
       });
   });
 
