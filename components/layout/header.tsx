@@ -7,7 +7,7 @@ import style from './index.module.less';
 export default function Header() {
   return (
     <Layout.Header className={style.header}>
-      <div>logo</div>
+      <div style={{ color: '#fff', fontSize: 24, fontWeight: 'bold' }}>Backend</div>
       <div></div>
       <div className={style.user}>
         <IconFaceFrownFill />
