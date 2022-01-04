@@ -2,7 +2,7 @@ import { createContext } from 'react';
 
 export interface SubmitData {
   id: string;
-  data: Record<string, any>;
+  meta: Record<string, any>;
   content: string;
   filename: string;
 }

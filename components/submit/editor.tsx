@@ -5,6 +5,7 @@ import { default as MdEditor } from 'md-editor-rt';
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
 import SubmitContext, { SubmitData } from './context';
 import 'md-editor-rt/lib/style.css';
+import { getCoverFromMD } from '../../utils/client';
 
 enum EditorMode {
   preview = 'preview',
@@ -22,7 +23,7 @@ function isEmpty(text: string) {
 // https://github.com/imzbf/md-editor-rt
 const Editor = (props: EditorProps) => {
   const { data, go, updateData } = useContext(SubmitContext);
-  const { content } = data as SubmitData;
+  const { content, meta } = data!;
   const { hide } = props;
   const [text, setText] = useState(content);
   const [mode, setMode] = useState(EditorMode.preview);

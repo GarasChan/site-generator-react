@@ -23,7 +23,7 @@ const Upload = (props: UploadProps) => {
     updateData({
       id: v4(),
       filename: `${v4()}.md`,
-      data: { title: '自定义文档' },
+      meta: { title: '自定义文档' },
       content: '# 自定义文档\n\n在这里编写文档'
     });
   }, [updateData]);
@@ -57,7 +57,7 @@ const Upload = (props: UploadProps) => {
           return;
         }
         const { content, data } = matter(result);
-        updateData({ id: v4(), content, data, filename: file.name });
+        updateData({ id: v4(), content, meta: data, filename: file.name });
         onSuccess();
       };
       reader.onerror = () => {

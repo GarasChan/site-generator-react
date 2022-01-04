@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { Button, Result as ArcoResult, Spin } from '@arco-design/web-react';
+import { Button, Result as ArcoResult, Space, Spin } from '@arco-design/web-react';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
 
@@ -33,9 +33,12 @@ const Result = () => {
           extra={
             error
               ? [
-                  <Button key="again" type="primary" onClick={retry}>
-                    重新提交
-                  </Button>
+                  <Space key="again">
+                    <Button onClick={handleFirst}>重新上传</Button>
+                    <Button type="primary" onClick={retry}>
+                      重新提交
+                    </Button>
+                  </Space>
                 ]
               : [
                   <Button key="again" type="primary" onClick={handleFirst}>

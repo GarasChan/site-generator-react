@@ -4,8 +4,11 @@ import { IconCalendarClock, IconHistory } from '@arco-design/web-react/icon';
 import classNames from 'classnames';
 import { Article, ArticleStatus } from '../../types';
 import style from './index.module.less';
-import { asyncRunSafe } from '../../utils';
-import request from '../../utils/request';
+import request, { asyncRunSafe } from '../../utils/request';
+import Link from 'next/link';
+import Image from 'next/image';
+import WaveLink from '../wave-link';
+import { getCover } from '../../utils/client';
 
 const { Row, Col } = Grid;
 const { Title, Paragraph, Text } = Typography;
@@ -23,7 +26,7 @@ const StatusMapping = {
 
 const ReviewItem = (props: ReviewItemProps) => {
   const { article, refresh } = props,
-    { id, filename, title, status, categories, tags, createTime, updateTime } = article;
+    { id, cover, filename, title, status, categories, tags, createTime, updateTime } = article;
 
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -50,14 +53,15 @@ const ReviewItem = (props: ReviewItemProps) => {
     <Row className={style.item} gutter={[0, -24]}>
       <Col className={style.cover} span={4}>
         <Avatar shape="square" style={{ width: '100%', height: '100%' }}>
-          md
+          {/* <Image src={cover} alt="Cover Image" /> */}
+          <img src={getCover(cover)} alt="Cover Image" />
         </Avatar>
       </Col>
       <Col className={style.main} span={18}>
         <div className={style.header}>
-          <Title className={style.title} ellipsis heading={6}>
-            {title}
-          </Title>
+          <Link href={`/manage/review/${id}`} passHref>
+            <WaveLink className={style.title}>{title}</WaveLink>
+          </Link>
           {categories && (
             <Space style={{ marginLeft: 24, lineHeight: 1 }}>
               {categories.map((c, i) => (
@@ -69,7 +73,9 @@ const ReviewItem = (props: ReviewItemProps) => {
               ))}
               {tags.map((t, i) => (
                 <Tooltip key={t + i} content={`标签：${t}`}>
-                  <Tag size="small">{t}</Tag>
+                  <Tag size="small" color="gray">
+                    {t}
+                  </Tag>
                 </Tooltip>
               ))}
             </Space>

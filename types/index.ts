@@ -26,6 +26,7 @@ export interface Article {
   title: string;
   categories: string[];
   tags: string[];
+  cover?: string;
 }
 
 export interface ArticleResponseSuccess {

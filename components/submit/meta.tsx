@@ -5,6 +5,7 @@ import { IconLeft, IconRight } from '@arco-design/web-react/icon';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
 import { AuthorResponseError, AuthorResponseSuccess, ConfigResponseError, ConfigResponseSuccess } from '../../types';
+import { getCoverFromMD } from '../../utils/client';
 
 const { Item } = Form;
 
@@ -14,6 +15,7 @@ export interface MetaProps {
 
 const Meta = (props: MetaProps) => {
   const { data, go, updateData } = useContext(SubmitContext);
+  const { meta, content } = data!;
   const { hide } = props;
   const { data: config } = useRequest<ConfigResponseSuccess, ConfigResponseError>({ url: '/config' });
   const { data: author } = useRequest<AuthorResponseSuccess, AuthorResponseError>({ url: '/author' });
@@ -21,10 +23,10 @@ const Meta = (props: MetaProps) => {
 
   const handleSubmit = useCallback(
     (values: any) => {
-      updateData({ ...data!, data: values });
+      updateData({ ...data!, meta: { cover: getCoverFromMD(content), ...values } });
       go(4);
     },
-    [data, go, updateData]
+    [content, data, go, updateData]
   );
 
   return (
@@ -33,7 +35,7 @@ const Meta = (props: MetaProps) => {
       style={{ maxWidth: 600, margin: 'auto' }}
       layout="vertical"
       requiredSymbol={{ position: 'end' }}
-      initialValues={data?.data}
+      initialValues={meta}
       onSubmit={handleSubmit}
     >
       <Item

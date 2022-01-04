@@ -3,19 +3,19 @@ import React, { ReactElement } from 'react';
 import Main from '../../../components/layout/main';
 import { MainCenter } from '../../../components/layout/main-center';
 import useRequest from '../../../hooks/useRequest';
-import { Article, ArticleResponseData } from '../../../types';
+import { Article, ArticleResponseSuccess } from '../../../types';
 import ReviewItem from '../../../components/review/ReviewItem';
 
 const Review = () => {
-  const { error, data, loading, retry } = useRequest<ArticleResponseData>({ url: '/article' });
+  const { error, data, loading, retry } = useRequest<ArticleResponseSuccess>({ url: '/article' });
 
   return (
     <MainCenter>
-      {error || !data?.success ? (
+      {error ? (
         <Result status="500" subTitle="请求失败" extra={<Button type="primary">重试</Button>} />
       ) : (
         <List loading={loading} bordered={false}>
-          {data.data.map((item: Article) => (
+          {data?.data.map((item: Article) => (
             <ReviewItem key={item.id} article={item} refresh={retry} />
           ))}
         </List>

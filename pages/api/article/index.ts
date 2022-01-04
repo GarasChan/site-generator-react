@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { resolvePath } from '../../../utils/index';
+import { resolvePath } from '../../../utils/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import { stringify } from 'gray-matter';
@@ -62,13 +62,13 @@ handler.get((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => 
 });
 
 handler.post((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => {
-  const { id, filename, data, content } = req.body;
+  const { id, filename, meta, content } = req.body;
 
   if (!fs.existsSync(articleDir)) {
     fs.mkdirSync(articleDir);
   }
 
-  const file = formatFile(content, data);
+  const file = formatFile(content, meta);
   const serverFilename = `${id}.md`;
   const time = dayjs().format('YYYY-MM-DD HH:mm');
   const info: Article = {
@@ -78,7 +78,7 @@ handler.post((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) =>
     createTime: time,
     updateTime: time,
     status: ArticleStatus.UPLOADED,
-    ...data
+    ...meta
   };
   fs.writeFileSync(join(articleDir, serverFilename), file, { encoding: 'utf-8' });
 

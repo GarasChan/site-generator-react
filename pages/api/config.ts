@@ -2,9 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { JSONFileSync, LowSync } from 'lowdb';
 import appConfig from '../../config/app-config.json';
-import { resolvePath } from '../../utils';
 import nextConnect from 'next-connect';
 import { ConfigResponseData } from '../../types';
+import { resolvePath } from '../../utils/server';
 
 const tagDb = new LowSync<string[]>(new JSONFileSync(resolvePath([appConfig.dbPath, 'tag.json'])));
 const categoryDb = new LowSync<string[]>(new JSONFileSync(resolvePath([appConfig.dbPath, 'category.json'])));

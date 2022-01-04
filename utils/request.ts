@@ -15,5 +15,13 @@ const request = axios.create({
 //   }
 //   return res;
 // });
-
 export default request;
+
+export async function asyncRunSafe<T = any>(fn: Promise<T>): Promise<[any] | [null, T]> {
+  try {
+    const result = await fn;
+    return [null, result];
+  } catch (e) {
+    return [e];
+  }
+}

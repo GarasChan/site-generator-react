@@ -1,22 +1,22 @@
-import { Button, List, Result, Skeleton } from '@arco-design/web-react';
 import React, { ReactElement } from 'react';
 import Main from '../../../components/layout/main';
 import { MainCenter } from '../../../components/layout/main-center';
-import useRequest from '../../../hooks/useRequest';
-import { ArticleResponseData } from '../../../types';
-import ReviewItem from '../../../components/review/ReviewItem';
 import ArticleContent from '../../../components/article-content';
-import { asyncRunSafe, getArticle } from '../../../utils';
-import request from '../../../utils/request';
-import axios from 'axios';
+import { ArticleData, getArticle } from '../../../utils/article';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import Head from 'next/head';
 
-const Review = ({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  // const { error, data, loading, retry } = useRequest<ArticleResponseData>({ url: '/article', params: {id: } });
-  console.log(data);
+export interface ReviewProps {
+  data: ArticleData;
+}
+
+const Review = ({ data }: ReviewProps) => {
   return (
     <MainCenter>
-      <ArticleContent content={`<h1>赵钟倩</h1>`} />
+      <Head>
+        <title>{data.title}</title>
+      </Head>
+      <ArticleContent content={data.file} />
     </MainCenter>
   );
 };
@@ -33,13 +33,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     };
   }
 
-  const data = getArticle(id as string);
+  const data = await getArticle(id as string);
 
-  // console.log('data', data);
+  if (!data) {
+    return {
+      notFound: true
+    };
+  }
 
   return {
     props: {
-      data
+      data: data
     }
   };
 };
