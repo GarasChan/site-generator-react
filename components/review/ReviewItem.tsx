@@ -60,7 +60,7 @@ const ReviewItem = (props: ReviewItemProps) => {
       <Col className={style.main} span={18}>
         <div className={style.header}>
           <Link href={`/manage/review/${id}`} passHref>
-            <WaveLink className={style.title}>{title}</WaveLink>
+            <WaveLink className={classNames(style.title, 'ellipsis')}>{title}</WaveLink>
           </Link>
           {categories && (
             <Space style={{ marginLeft: 24, lineHeight: 1 }}>

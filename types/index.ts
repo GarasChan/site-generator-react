@@ -1,9 +1,6 @@
-export interface ArticleAgreeResponseSuccess {
-  success: true;
-}
+export interface ArticleAgreeResponseSuccess {}
 
 export interface ArticleAgreeResponseError {
-  success: false;
   message: string;
 }
 
@@ -30,13 +27,12 @@ export interface Article {
 }
 
 export interface ArticleResponseSuccess {
-  success: true;
-  data: Article[];
+  total: number;
+  articles: Article[];
   file?: string;
 }
 
 export interface ArticleResponseError {
-  success: false;
   message: string;
 }
 
@@ -49,12 +45,10 @@ export interface Author {
 }
 
 export interface AuthorResponseSuccess {
-  success: true;
-  data: Author[];
+  authors: Author[];
 }
 
 export interface AuthorResponseError {
-  success: false;
   message: string;
 }
 
@@ -66,12 +60,10 @@ export interface Config {
 }
 
 export interface ConfigResponseSuccess {
-  success: true;
-  data: Config;
+  config: Config;
 }
 
 export interface ConfigResponseError {
-  success: false;
   message: string;
 }
 

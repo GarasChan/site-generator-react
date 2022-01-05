@@ -2,11 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
 import { JSONFileSync, LowSync } from 'lowdb';
-import { resolve } from 'path';
-import appConfig from '../../config/app-config.json';
 import { Author, AuthorResponseData } from '../../types';
+import { resolvePath } from '../../utils/server';
 
-const db = new LowSync<Author[]>(new JSONFileSync(resolve(process.cwd(), appConfig.dbPath, 'author.json')));
+const db = new LowSync<Author[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'author.json'])));
 
 export const getAuthor = (id?: string): Author[] => {
   db.read();
@@ -37,12 +36,12 @@ export const writeAuthor = (author: Partial<Author>) => {
 
 const handler = nextConnect({
   onError(error, _, res: NextApiResponse<AuthorResponseData>) {
-    res.status(501).json({ success: false, message: error.message });
+    res.status(501).json({ message: error.message });
   }
 });
 
 handler.get((req: NextApiRequest, res: NextApiResponse<AuthorResponseData>) => {
-  res.status(200).json({ success: true, data: getAuthor(req.query.id as string) });
+  res.status(200).json({ authors: getAuthor(req.query.id as string) });
 });
 
 export default handler;

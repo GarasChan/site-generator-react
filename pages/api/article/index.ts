@@ -4,25 +4,45 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import { stringify } from 'gray-matter';
 import nextConnect from 'next-connect';
-import appConfig from '../../../config/app-config.json';
 import dayjs from 'dayjs';
 import { getAuthor } from '../author';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleResponseData, ArticleStatus } from '../../../types';
 
-const db = new LowSync<Article[]>(new JSONFileSync(resolve(process.cwd(), appConfig.dbPath, 'article.json')));
+const db = new LowSync<Article[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'article.json'])));
+const articleDir = resolvePath(process.env.ARTICLE_PATH!);
 
-const get = (id?: string): Article[] => {
+const get = (params: {
+  id?: string;
+  pageSize?: number;
+  pageNumber?: number;
+}): {
+  total: number;
+  articles: Article[];
+} => {
+  const { id, pageNumber, pageSize } = params;
   db.read();
   if (!db.data) {
-    return [];
+    db.data = [];
+    return {
+      total: 0,
+      articles: []
+    };
   }
+  const total = db.data.length;
+  let articles = db.data;
   if (typeof id === 'string') {
     const article = db.data.find((item) => item.id === id);
-    return article ? [article] : [];
+    articles = article ? [article] : [];
   }
-  return db.data;
+  if (pageSize && pageNumber) {
+    articles = db.data.slice(pageSize * (pageNumber - 1), pageSize * pageNumber);
+  }
+  return {
+    total,
+    articles
+  };
 };
 
 const write = (article: Partial<Article>) => {
@@ -42,11 +62,9 @@ const write = (article: Partial<Article>) => {
 
 const handler = nextConnect({
   onError(error, _, res: NextApiResponse<ArticleResponseData>) {
-    res.status(501).json({ success: false, message: error.message });
+    res.status(501).json({ message: error.message });
   }
 });
-
-const articleDir = resolvePath(appConfig.articlePath);
 
 const formatFile = (content: string, data: any) => {
   const { author: authorId, ...rest } = data;
@@ -56,9 +74,9 @@ const formatFile = (content: string, data: any) => {
 
 handler.get((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => {
   const { query } = req;
-  const { id } = query;
-  const info = get(id as string);
-  res.status(200).json({ success: true, data: info });
+  const { id, pageSize, pageNumber } = query;
+  const info = get({ id: id as string, pageSize: +pageSize, pageNumber: +pageNumber });
+  res.status(200).json(info);
 });
 
 handler.post((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => {
@@ -83,7 +101,7 @@ handler.post((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) =>
   fs.writeFileSync(join(articleDir, serverFilename), file, { encoding: 'utf-8' });
 
   write(info);
-  res.status(200).json({ success: true, file, data: [info] });
+  res.status(200).end();
 });
 
 export default handler;

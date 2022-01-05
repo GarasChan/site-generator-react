@@ -4,17 +4,7 @@ const request = axios.create({
   baseURL: '/api'
 });
 
-// request.interceptors.request.use((req) => {
-//   console.log(req);
-//   return req;
-// });
-
-// request.interceptors.response.use((res) => {
-//   if (res.status === 200) {
-//     return res.data;
-//   }
-//   return res;
-// });
+request.interceptors.response.use((res) => res.data);
 export default request;
 
 export async function asyncRunSafe<T = any>(fn: Promise<T>): Promise<[any] | [null, T]> {

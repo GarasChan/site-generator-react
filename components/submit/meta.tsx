@@ -19,7 +19,7 @@ const Meta = (props: MetaProps) => {
   const { hide } = props;
   const { data: config } = useRequest<ConfigResponseSuccess, ConfigResponseError>({ url: '/config' });
   const { data: author } = useRequest<AuthorResponseSuccess, AuthorResponseError>({ url: '/author' });
-  const { categories = [], tags = [] } = config?.data || {};
+  const { categories = [], tags = [] } = config?.config || {};
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -61,7 +61,7 @@ const Meta = (props: MetaProps) => {
         ]}
       >
         <Select
-          options={author?.data.map((author) => ({ label: author.name, value: author.id }))}
+          options={author?.authors.map((author) => ({ label: author.name, value: author.id }))}
           placeholder="请选择作者"
         />
       </Item>

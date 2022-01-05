@@ -1,6 +1,4 @@
 const fs = require('fs');
-import appConfig from '../config/app-config.json';
-import { resolve } from 'path';
 import { JSONFileSync, LowSync } from 'lowdb';
 import { Article } from '../types';
 import matter from 'gray-matter';
@@ -14,7 +12,7 @@ export interface ArticleData extends Article {
   file: string;
 }
 
-const db = new LowSync<Article[]>(new JSONFileSync(resolve(process.cwd(), appConfig.dbPath, 'article.json')));
+const db = new LowSync<Article[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'article.json'])));
 
 export const markdownToHtml = async (markdown: string) => {
   const result = await remark().use(html).process(markdown);
@@ -32,7 +30,7 @@ export const getArticle = async (id: string): Promise<ArticleData | null> => {
   }
   const { filename } = article;
 
-  const file = fs.readFileSync(resolvePath([appConfig.articlePath, filename]), { encoding: 'utf-8' });
+  const file = fs.readFileSync(resolvePath([process.env.ARTICLE_PATH!, filename]), { encoding: 'utf-8' });
   const { content } = matter(file);
   const htmlContent = await markdownToHtml(content);
 

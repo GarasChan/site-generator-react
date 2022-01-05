@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
-import appConfig from '../../../config/app-config.json';
 import { resolve } from 'path';
 import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleAgreeResponseData, ArticleStatus } from '../../../types';
+import { resolvePath } from '../../../utils/server';
 
-const db = new LowSync<Article[]>(new JSONFileSync(resolve(process.cwd(), appConfig.dbPath, 'article.json')));
+const db = new LowSync<Article[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'article.json'])));
 
 const update = (article: Partial<Article>) => {
   db.read();
