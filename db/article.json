@@ -41,7 +41,7 @@
     "originFilename": "亚米级分辨率_DEM.MD",
     "createTime": "2022-01-04 23:29",
     "updateTime": "2022-01-04 23:29",
-    "status": "UPLOADED",
+    "status": "REVIEWED",
     "cover": "https://gitee.com/kitmyfaceplease/image_upload/raw/master/image/20211120192022.png",
     "title": "Cover",
     "author": "id1",
@@ -59,7 +59,7 @@
     "originFilename": "亚米级分辨率_DEM.MD",
     "createTime": "2022-01-04 23:27",
     "updateTime": "2022-01-04 23:27",
-    "status": "UPLOADED",
+    "status": "REVIEWED",
     "cover": "https://gitee.com/kitmyfaceplease/image_upload/raw/master/image/20211120192022.png",
     "title": "标题",
     "author": "id2",
@@ -94,7 +94,7 @@
     "originFilename": "亚米级分辨率_DEM.MD",
     "createTime": "2021-12-28 22:30",
     "updateTime": "2021-12-28 22:30",
-    "status": "UPLOADED",
+    "status": "REJECTED",
     "title": "ceshi 萨达萨达",
     "author": "id1",
     "categories": [
@@ -111,7 +111,7 @@
     "originFilename": "亚米级分辨率_DEM.MD",
     "createTime": "2021-12-23 22:52",
     "updateTime": "2021-12-23 22:52",
-    "status": "UPLOADED",
+    "status": "REVIEWED",
     "title": "标题",
     "author": "id2",
     "categories": [
@@ -128,7 +128,7 @@
     "originFilename": "acef182a-8970-4fe4-9a96-e364f1e65a33.md",
     "createTime": "2021-12-23 22:54",
     "updateTime": "2021-12-23 22:54",
-    "status": "UPLOADED",
+    "status": "REJECTED",
     "title": "自定义文档",
     "author": "id1",
     "categories": [
@@ -144,7 +144,7 @@
     "originFilename": "亚米级分辨率_DEM.MD",
     "createTime": "2021-12-23 23:02",
     "updateTime": "2021-12-23 23:02",
-    "status": "UPLOADED",
+    "status": "REJECTED",
     "title": "标题",
     "author": "id1",
     "categories": [

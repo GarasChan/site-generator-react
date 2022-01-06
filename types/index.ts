@@ -42,6 +42,7 @@ export interface Author {
   id: string;
   name: string;
   descImg: string;
+  email?: string;
 }
 
 export interface AuthorResponseSuccess {

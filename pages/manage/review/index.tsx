@@ -1,12 +1,13 @@
-import { Button, List, Result, Spin } from '@arco-design/web-react';
-import React, { ReactElement, useEffect, useState } from 'react';
+import { List, Input } from '@arco-design/web-react';
+import React, { ReactElement, useState } from 'react';
 import Main from '../../../components/layout/main';
 import { MainCenter } from '../../../components/layout/main-center';
-import useRequest from '../../../hooks/useRequest';
 import { Article, ArticleResponseSuccess } from '../../../types';
 import ReviewItem from '../../../components/review/ReviewItem';
-import request, { asyncRunSafe } from '../../../utils/request';
+import { request, asyncRunSafe } from '../../../utils/client';
 import { useDeepCompareEffect } from 'react-use';
+
+const InputSearch = Input.Search;
 
 export interface ReviewParams {
   pageNumber: number;
@@ -38,20 +39,25 @@ const Review = () => {
   return (
     <MainCenter>
       {/* <Result status="500" subTitle="请求失败" extra={<Button type="primary">重试</Button>} /> */}
+      <div style={{ padding: '0 12px' }}>
+        <InputSearch searchButton placeholder="请输入标题名称搜索" />
+      </div>
       <List
+        style={{ marginTop: 24 }}
         loading={loading}
         bordered={false}
         pagination={{
           total,
           pageSize: PAGE_SIZE,
           current: params.pageNumber,
+          showTotal: true,
           onChange: (current) => {
             setParams({ pageNumber: current });
           }
         }}
       >
         {data.map((item: Article) => (
-          <ReviewItem key={item.id} article={item} />
+          <ReviewItem key={item.id} article={item} refresh={fetchData} />
         ))}
       </List>
     </MainCenter>

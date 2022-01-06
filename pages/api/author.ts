@@ -5,7 +5,7 @@ import { JSONFileSync, LowSync } from 'lowdb';
 import { Author, AuthorResponseData } from '../../types';
 import { resolvePath } from '../../utils/server';
 
-const db = new LowSync<Author[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'author.json'])));
+const db = new LowSync<Author[]>(new JSONFileSync(resolvePath(['db', 'author.json'])));
 
 export const getAuthor = (id?: string): Author[] => {
   db.read();

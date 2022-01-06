@@ -10,7 +10,7 @@ import { join } from 'path';
 import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleResponseData, ArticleStatus } from '../../../types';
 
-const db = new LowSync<Article[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'article.json'])));
+const db = new LowSync<Article[]>(new JSONFileSync(resolvePath(['db', 'article.json'])));
 const articleDir = resolvePath(process.env.ARTICLE_PATH!);
 
 const get = (params: {

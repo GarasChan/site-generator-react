@@ -5,8 +5,8 @@ import nextConnect from 'next-connect';
 import { ConfigResponseData } from '../../types';
 import { resolvePath } from '../../utils/server';
 
-const tagDb = new LowSync<string[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'tag.json'])));
-const categoryDb = new LowSync<string[]>(new JSONFileSync(resolvePath([process.env.DB_PATH!, 'category.json'])));
+const tagDb = new LowSync<string[]>(new JSONFileSync(resolvePath(['db', 'tag.json'])));
+const categoryDb = new LowSync<string[]>(new JSONFileSync(resolvePath(['db', 'category.json'])));
 
 const handler = nextConnect({
   onError(error, _, res: NextApiResponse<ConfigResponseData>) {

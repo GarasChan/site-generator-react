@@ -1294,6 +1294,11 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
+emailjs@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.npmmirror.com/emailjs/download/emailjs-3.7.0.tgz#1a4564293f7296d66d16d5c6cce10b43da4e2ebb"
+  integrity sha512-eLHvGdSaLyn2su51y5BJqdKVxVK77kyW/oesw5lQk7fDIANYqi9LEF7zhw2Rf/vN0t8QAdAy30Ju/SCi8HHuTg==
+
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.npmmirror.com/emoji-regex/download/emoji-regex-8.0.0.tgz?cache=0&sync_timestamp=1632751408145&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Femoji-regex%2Fdownload%2Femoji-regex-8.0.0.tgz"

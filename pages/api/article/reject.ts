@@ -1,10 +1,10 @@
-import { getAuthor } from './../author';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
 import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleAgreeResponseData, ArticleStatus } from '../../../types';
 import { resolvePath, sendEmail } from '../../../utils/server';
+import { getAuthor } from '../author';
 
 const db = new LowSync<Article[]>(new JSONFileSync(resolvePath(['db', 'article.json'])));
 
@@ -24,21 +24,31 @@ const update = (article: Partial<Article>) => {
   };
 };
 
+const formatMessage = ({ createTime, title }: { createTime: string; title: string }) => {
+  return (
+    process.env.EMAIL_REJECTED_TEMPLATE?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)?.replaceAll(
+      '{{title}}',
+      `《${title || 'unknown'}》`
+    ) || ''
+  );
+};
+
 const handler = nextConnect({
   onError(error, _, res: NextApiResponse<ArticleAgreeResponseData>) {
     res.status(501).json({ message: error.message });
   }
 });
 
-handler.post(async (req: NextApiRequest, res: NextApiResponse<ArticleAgreeResponseData>) => {
+handler.post((req: NextApiRequest, res: NextApiResponse<ArticleAgreeResponseData>) => {
   const { id } = req.query;
+  // const { reason } = req.body;
 
   if (!id) {
     res.status(400).json({ message: '请求参数异常' });
     return;
   }
 
-  const { success, message, articles } = update({ id: id as string, status: ArticleStatus.REVIEWED });
+  const { success, message, articles } = update({ id: id as string, status: ArticleStatus.REJECTED });
 
   if (!success || !articles) {
     res.status(404).json({ message });
@@ -54,12 +64,8 @@ handler.post(async (req: NextApiRequest, res: NextApiResponse<ArticleAgreeRespon
   if (email) {
     sendEmail({
       to: email,
-      subject: '文章审核通过提醒',
-      text:
-        process.env.EMAIL_SUCCEED_TEMPLATE?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)?.replaceAll(
-          '{{title}}',
-          `《${title || 'unknown'}》`
-        ) || ''
+      subject: '文章退回提醒',
+      text: formatMessage({ createTime, title })
     }).then((result) => {
       console.log(result.error || result.message);
     });

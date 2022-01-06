@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { Avatar, Grid, Message, Space, Tag, Tooltip, Button, Typography } from '@arco-design/web-react';
+import { Avatar, Grid, Message, Space, Tag, Tooltip, Button, Typography, Modal } from '@arco-design/web-react';
 import { IconCalendarClock, IconHistory } from '@arco-design/web-react/icon';
 import classNames from 'classnames';
 import { Article, ArticleStatus } from '../../types';
 import style from './index.module.less';
-import request, { asyncRunSafe } from '../../utils/request';
+import { request, asyncRunSafe, getCover } from '../../utils/client';
 import Link from 'next/link';
-import Image from 'next/image';
 import WaveLink from '../wave-link';
-import { getCover } from '../../utils/client';
 
 const { Row, Col } = Grid;
 const { Title, Paragraph, Text } = Typography;
@@ -45,8 +43,36 @@ const ReviewItem = (props: ReviewItemProps) => {
     );
   };
 
-  const handleAgree = async (id: string) => {
-    const [err, result] = await asyncRunSafe(request.post(`/article/agree?id=${id}`));
+  const handleReject = async (e: Event) => {
+    e.stopPropagation();
+    Modal.confirm({
+      title: '确认退回该文章',
+      onOk: async () => {
+        const [err, result] = await asyncRunSafe(request.post(`/article/reject?id=${id}`));
+        if (err) {
+          Message.error(err.response.data?.message);
+          return;
+        }
+        refresh();
+        Message.success('退回成功');
+      }
+    });
+  };
+
+  const handleAgree = async (e: Event) => {
+    e.stopPropagation();
+    Modal.confirm({
+      title: '确认审批通过该文章',
+      onOk: async () => {
+        const [err, result] = await asyncRunSafe(request.post(`/article/agree?id=${id}`));
+        if (err) {
+          Message.error(err.response.data?.message);
+          return;
+        }
+        refresh();
+        Message.success('审批成功');
+      }
+    });
   };
 
   return (
@@ -91,7 +117,7 @@ const ReviewItem = (props: ReviewItemProps) => {
             {createTime && (
               <Tooltip content="创建时间">
                 <span>
-                  <IconCalendarClock style={{ marginRight: 4, color: 'dodgerblue' }} />
+                  <IconCalendarClock style={{ marginRight: 4, color: 'dodgerblue', fontSize: 16 }} />
                   {createTime}
                 </span>
               </Tooltip>
@@ -99,7 +125,7 @@ const ReviewItem = (props: ReviewItemProps) => {
             {updateTime && (
               <Tooltip content="最近更新时间">
                 <span>
-                  <IconHistory style={{ marginRight: 4, color: 'cadetblue' }} />
+                  <IconHistory style={{ marginRight: 4, color: 'cadetblue', fontSize: 16 }} />
                   {updateTime}
                 </span>
               </Tooltip>
@@ -109,19 +135,21 @@ const ReviewItem = (props: ReviewItemProps) => {
       </Col>
       <Col className={style.action} span={2}>
         <Space direction="vertical">
-          <Button size="small" type="text" status="danger">
+          <Button
+            size="small"
+            type="text"
+            status="danger"
+            onClick={handleReject}
+            disabled={status !== ArticleStatus.UPLOADED}
+          >
             退回
           </Button>
           <Button
             size="small"
             type="text"
             status="success"
-            onClick={(e: Event) => {
-              e.stopPropagation();
-              // statsUtil.write(filename, {});
-              Message.success('审批成功');
-              refresh();
-            }}
+            onClick={handleAgree}
+            disabled={status !== ArticleStatus.UPLOADED}
           >
             同意
           </Button>

@@ -15,3 +15,12 @@ export const getCoverFromMD = (text: string) => {
 export const getCover = (cover?: string) => {
   return cover ?? BASE_COVER;
 };
+
+export async function asyncRunSafe<T = any>(fn: Promise<T>): Promise<[any] | [null, T]> {
+  try {
+    const result = await fn;
+    return [null, result];
+  } catch (e) {
+    return [e];
+  }
+}

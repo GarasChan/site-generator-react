@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { useState, useEffect, useCallback } from 'react';
-import request from '../utils/request';
+import { request } from '../utils/client';
 import useRefCallback from './useRefCallback';
 
 export interface UsePostData<S, E> {
