@@ -64,6 +64,8 @@ handler.post(async (req: NextApiRequest, res: NextApiResponse<ArticleAgreeRespon
       console.log(result.error || result.message);
     });
   }
+
+  // TODO: 上线并通知
 });
 
 export default handler;

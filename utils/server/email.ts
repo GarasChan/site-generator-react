@@ -1,29 +1,29 @@
-import { Message, SMTPClient } from 'emailjs';
+import { Message, MessageAttachment, SMTPClient } from 'emailjs';
 
 export interface EmailParams {
-  subject: string;
-  text: string;
   to: string;
+  subject: string;
+  text?: string;
+  attachment?: MessageAttachment[];
 }
 
-console.log({ EMAIL_USER: process.env.EMAIL_USER, EMAIL_PASSWORD: process.env.EMAIL_PASSWORD });
-
 const client = new SMTPClient({
-  user: process.env.EMAIL_USER,
+  user: process.env.EMAIL_ACCOUNT,
   password: process.env.EMAIL_PASSWORD,
   host: 'smtp.qq.com',
   ssl: true
 });
 
 export const sendEmail = async (params: EmailParams) => {
-  const { subject, text, to } = params;
+  const { to, subject, text, attachment } = params;
   try {
     const message = await client.sendAsync(
       new Message({
+        to,
         subject,
-        text,
-        from: process.env.EMAIL_USER,
-        to
+        text: `${text} 请勿回复该邮件。`,
+        from: `${process.env.EMAIL_USER} <${process.env.EMAIL_ACCOUNT}>`,
+        attachment
       })
     );
     return { success: true, message };

@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { Avatar, Grid, Message, Space, Tag, Tooltip, Button, Typography, Modal } from '@arco-design/web-react';
+import {
+  Avatar,
+  Grid,
+  Message,
+  Space,
+  Tag,
+  Tooltip,
+  Button,
+  Typography,
+  Modal,
+  Form,
+  Input
+} from '@arco-design/web-react';
 import { IconCalendarClock, IconHistory } from '@arco-design/web-react/icon';
 import classNames from 'classnames';
 import { Article, ArticleStatus } from '../../types';
@@ -24,31 +36,24 @@ const StatusMapping = {
 
 const ReviewItem = (props: ReviewItemProps) => {
   const { article, refresh } = props,
-    { id, cover, filename, title, status, categories, tags, createTime, updateTime } = article;
+    { id, cover, title, status, categories, tags, createTime, updateTime } = article;
 
-  const [actionLoading, setActionLoading] = useState(false);
-
-  const renderDesc = (desc: string, tags?: string[]) => {
-    if (!tags?.length) {
-      return null;
-    }
-    return (
-      <Space style={{ marginTop: 8 }}>
-        {tags.map((t, i) => (
-          <Tooltip key={t + i} content={`标签：${t}`}>
-            <Tag size="small">{t}</Tag>
-          </Tooltip>
-        ))}
-      </Space>
-    );
-  };
+  const [form] = Form.useForm();
 
   const handleReject = async (e: Event) => {
     e.stopPropagation();
     Modal.confirm({
       title: '确认退回该文章',
+      content: (
+        <Form form={form} wrapperCol={{ span: 24 }}>
+          <Form.Item field="reason" rules={[{ required: true, message: '请输入退回原因' }]}>
+            <Input.TextArea style={{ minHeight: 150 }} placeholder="请输入退回原因，多条原因请换行输入" />
+          </Form.Item>
+        </Form>
+      ),
       onOk: async () => {
-        const [err, result] = await asyncRunSafe(request.post(`/article/reject?id=${id}`));
+        const res = await form.validate();
+        const [err] = await asyncRunSafe(request.post(`/article/reject?id=${id}`, res));
         if (err) {
           Message.error(err.response.data?.message);
           return;
