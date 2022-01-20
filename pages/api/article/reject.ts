@@ -25,36 +25,12 @@ const update = (article: Partial<Article>) => {
 };
 
 const formatMessage = ({ createTime, title, reason }: { createTime: string; title: string; reason: string }) => {
-  const reasonStr = `\n<ul>${reason
+  const reasonStr = `\\n<ul>${reason
     .split('\n')
     .filter((item: string) => item.trim())
     .map((item: string) => `<li>${item.trim()}</li>`)
-    .join('')}</ul>\n`;
-  // console.log(
-  //   process.env.EMAIL_REJECTED_TEMPLATE?.split('{{reason}}').filter(item => item.trim()).forEach(item => {
-
-  //   })
-  //     ?.split('\n')
-  //     .filter((item) => item.trim())
-  //     .map((item) =>
-  //       item.includes('{{reason}}')
-  //         ? item.replaceAll('{{reason}}', reasonStr)
-  //         : `<p>${item
-  //             ?.trim()
-  //             ?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)
-  //             ?.replaceAll('{{title}}', title ? `《${title}》` : ' unknown ')}</p>`
-  //     )
-  //     .join('')
-  // );
-  console.log('1', process.env.EMAIL_REJECTED_TEMPLATE?.replace(/\{\{reason\}\}/, reasonStr));
-  console.log('2', process.env.EMAIL_REJECTED_TEMPLATE?.replace(/\{\{reason\}\}/, reasonStr)?.split('\\n'));
-  console.log(
-    '3',
-    process.env.EMAIL_REJECTED_TEMPLATE?.replace(/\{\{reason\}\}/, reasonStr)
-      ?.split('\\n')
-      .filter((item) => item.trim())
-  );
-  return process.env.EMAIL_REJECTED_TEMPLATE?.replace(/\{\{reason\}\}/, reasonStr)
+    .join('')}</ul>\\n`;
+  const message = process.env.EMAIL_REJECTED_TEMPLATE?.replace(/\{\{reason\}\}/, reasonStr)
     ?.split('\\n')
     .filter((item) => item.trim())
     .map(
@@ -63,8 +39,9 @@ const formatMessage = ({ createTime, title, reason }: { createTime: string; titl
           ?.trim()
           ?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)
           ?.replaceAll('{{title}}', title ? `《${title}》` : ' unknown ')}</p>`
-    )
-    .join('');
+    );
+  message?.push('<p>请勿直接回复该邮件。</p>');
+  return message?.join('');
 };
 
 const handler = nextConnect({

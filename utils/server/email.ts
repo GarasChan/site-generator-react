@@ -19,10 +19,10 @@ export const sendEmail = async (params: EmailParams) => {
   try {
     const message = await client.sendAsync(
       new Message({
+        from: `${process.env.EMAIL_USER} <${process.env.EMAIL_ACCOUNT}>`,
         to,
         subject,
-        text: `${text} 请勿回复该邮件。`,
-        from: `${process.env.EMAIL_USER} <${process.env.EMAIL_ACCOUNT}>`,
+        text,
         attachment
       })
     );
