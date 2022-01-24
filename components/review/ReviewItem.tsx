@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Avatar,
   Grid,
@@ -19,6 +19,7 @@ import style from './index.module.less';
 import { request, asyncRunSafe, getCover } from '../../utils/client';
 import Link from 'next/link';
 import WaveLink from '../wave-link';
+import Image from 'next/image';
 
 const { Row, Col } = Grid;
 const { Title, Paragraph, Text } = Typography;
@@ -84,13 +85,13 @@ const ReviewItem = (props: ReviewItemProps) => {
     <Row className={style.item} gutter={[0, -24]}>
       <Col className={style.cover} span={4}>
         <Avatar shape="square" style={{ width: '100%', height: '100%' }}>
-          {/* <Image src={cover} alt="Cover Image" /> */}
+          {/* <Image src={getCover(cover)} alt="Cover Image" /> */}
           <img src={getCover(cover)} alt="Cover Image" />
         </Avatar>
       </Col>
       <Col className={style.main} span={18}>
         <div className={style.header}>
-          <Link href={`/manage/review/${id}`} passHref>
+          <Link href={`/article/${id}`} passHref>
             <WaveLink className={classNames(style.title, 'ellipsis')}>{title}</WaveLink>
           </Link>
           {categories && (

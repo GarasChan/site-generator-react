@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import Main from '../../../components/layout/main';
-import { MainCenter } from '../../../components/layout/main-center';
-import ArticleContent from '../../../components/article-content';
-import { ArticleData, getArticle } from '../../../utils/server';
+import Main from '../../components/layout/main';
+import { MainCenter } from '../../components/layout/main-center';
+import ArticleContent from '../../components/article-content';
+import { ArticleData, getArticle } from '../../utils/server';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 

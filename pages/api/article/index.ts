@@ -7,10 +7,10 @@ import nextConnect from 'next-connect';
 import dayjs from 'dayjs';
 import { getAuthor } from '../author';
 import { join } from 'path';
-import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleResponseData, ArticleStatus } from '../../../types';
+import { withSessionRoute } from '../../../lib/with-session';
+import { articleDB } from '../../../utils/server/db';
 
-const db = new LowSync<Article[]>(new JSONFileSync(resolvePath(['db', 'article.json'])));
 const articleDir = resolvePath(process.env.ARTICLE_PATH!);
 
 const get = (params: {
@@ -22,22 +22,22 @@ const get = (params: {
   articles: Article[];
 } => {
   const { id, pageNumber, pageSize } = params;
-  db.read();
-  if (!db.data) {
-    db.data = [];
+  articleDB.read();
+  if (!articleDB.data) {
+    articleDB.data = [];
     return {
       total: 0,
       articles: []
     };
   }
-  const total = db.data.length;
-  let articles = db.data;
+  const total = articleDB.data.length;
+  let articles = articleDB.data;
   if (typeof id === 'string') {
-    const article = db.data.find((item) => item.id === id);
+    const article = articleDB.data.find((item) => item.id === id);
     articles = article ? [article] : [];
   }
   if (pageSize && pageNumber) {
-    articles = db.data.slice(pageSize * (pageNumber - 1), pageSize * pageNumber);
+    articles = articleDB.data.slice(pageSize * (pageNumber - 1), pageSize * pageNumber);
   }
   return {
     total,
@@ -46,18 +46,18 @@ const get = (params: {
 };
 
 const write = (article: Partial<Article>) => {
-  db.read();
-  if (!Array.isArray(db.data)) {
-    db.data = [article as Article];
+  articleDB.read();
+  if (!Array.isArray(articleDB.data)) {
+    articleDB.data = [article as Article];
   } else {
-    const current = db.data.find((item) => item.id === article.id);
+    const current = articleDB.data.find((item) => item.id === article.id);
     if (!current) {
-      db.data.unshift(article as Article);
+      articleDB.data.unshift(article as Article);
     } else {
       Object.assign(current, article);
     }
   }
-  db.write();
+  articleDB.write();
 };
 
 const handler = nextConnect({
@@ -104,4 +104,4 @@ handler.post((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) =>
   res.status(200).end();
 });
 
-export default handler;
+export default withSessionRoute(handler);

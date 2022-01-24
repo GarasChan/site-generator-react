@@ -39,3 +39,8 @@ export const getArticle = async (id: string): Promise<ArticleData | null> => {
     file: htmlContent
   };
 };
+
+export const getArticleLink = (id: string, title?: string, origin?: string) => {
+  const name = title || 'unknown';
+  return origin ? `<a href=${origin}/article/${id} target='_blank'>${name}</a>` : name;
+};

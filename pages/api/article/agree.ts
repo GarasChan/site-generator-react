@@ -2,19 +2,17 @@ import { getAuthor } from './../author';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
-import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleAgreeResponseData, ArticleStatus } from '../../../types';
-import { resolvePath, sendEmail } from '../../../utils/server';
-
-const db = new LowSync<Article[]>(new JSONFileSync(resolvePath(['db', 'article.json'])));
+import { getArticleLink, sendEmail } from '../../../utils/server';
+import { articleDB } from '../../../utils/server/db';
 
 const update = (article: Partial<Article>) => {
-  db.read();
-  if (Array.isArray(db.data)) {
-    const current = db.data.find((item) => item.id === article.id);
+  articleDB.read();
+  if (Array.isArray(articleDB.data)) {
+    const current = articleDB.data.find((item) => item.id === article.id);
     if (current) {
       Object.assign(current, article);
-      db.write();
+      articleDB.write();
       return { success: true, articles: [current] };
     }
   }
@@ -31,7 +29,7 @@ const handler = nextConnect({
 });
 
 handler.post(async (req: NextApiRequest, res: NextApiResponse<ArticleAgreeResponseData>) => {
-  const { id } = req.query;
+  const id = req.query.id as string;
 
   if (!id) {
     res.status(400).json({ message: '请求参数异常' });
@@ -52,14 +50,20 @@ handler.post(async (req: NextApiRequest, res: NextApiResponse<ArticleAgreeRespon
   const { author, title, createTime } = articles?.[0];
   const { email } = getAuthor(author)[0];
   if (email) {
+    const link = getArticleLink(id, title, req.headers.origin);
     sendEmail({
       to: email,
       subject: '文章审核通过提醒',
-      text:
-        process.env.EMAIL_SUCCEED_TEMPLATE?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)?.replaceAll(
-          '{{title}}',
-          `《${title || 'unknown'}》`
-        ) || ''
+      attachment: [
+        {
+          data:
+            process.env.EMAIL_SUCCEED_TEMPLATE?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)?.replaceAll(
+              '{{title}}',
+              `《${link}》`
+            ) || '',
+          alternative: true
+        }
+      ]
     }).then((result) => {
       console.log(result.error || result.message);
     });

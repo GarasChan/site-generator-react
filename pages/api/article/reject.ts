@@ -1,20 +1,19 @@
+import { getArticleLink } from './../../../utils/server/article';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
-import { JSONFileSync, LowSync } from 'lowdb';
 import { Article, ArticleAgreeResponseData, ArticleStatus } from '../../../types';
-import { resolvePath, sendEmail } from '../../../utils/server';
+import { sendEmail } from '../../../utils/server';
 import { getAuthor } from '../author';
-
-const db = new LowSync<Article[]>(new JSONFileSync(resolvePath(['db', 'article.json'])));
+import { articleDB } from '../../../utils/server/db';
 
 const update = (article: Partial<Article>) => {
-  db.read();
-  if (Array.isArray(db.data)) {
-    const current = db.data.find((item) => item.id === article.id);
+  articleDB.read();
+  if (Array.isArray(articleDB.data)) {
+    const current = articleDB.data.find((item) => item.id === article.id);
     if (current) {
       Object.assign(current, article);
-      db.write();
+      articleDB.write();
       return { success: true, articles: [current] };
     }
   }
@@ -38,7 +37,7 @@ const formatMessage = ({ createTime, title, reason }: { createTime: string; titl
         `<p>${item
           ?.trim()
           ?.replaceAll('{{time}}', ` ${createTime || 'unknown'} `)
-          ?.replaceAll('{{title}}', title ? `《${title}》` : ' unknown ')}</p>`
+          ?.replaceAll('{{title}}', `《${title}》`)}</p>`
     );
   message?.push('<p>请勿直接回复该邮件。</p>');
   return message?.join('');
@@ -51,7 +50,7 @@ const handler = nextConnect({
 });
 
 handler.post((req: NextApiRequest, res: NextApiResponse<ArticleAgreeResponseData>) => {
-  const { id } = req.query;
+  const id = req.query.id as string;
   const { reason } = req.body;
 
   if (!id) {
@@ -77,7 +76,7 @@ handler.post((req: NextApiRequest, res: NextApiResponse<ArticleAgreeResponseData
       subject: '文章退回提醒',
       attachment: [
         {
-          data: formatMessage({ createTime, title, reason }),
+          data: formatMessage({ createTime, title: getArticleLink(id, title, req.headers.origin), reason }),
           alternative: true
         }
       ]

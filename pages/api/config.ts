@@ -1,12 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { JSONFileSync, LowSync } from 'lowdb';
 import nextConnect from 'next-connect';
 import { ConfigResponseData } from '../../types';
-import { resolvePath } from '../../utils/server';
-
-const tagDb = new LowSync<string[]>(new JSONFileSync(resolvePath(['db', 'tag.json'])));
-const categoryDb = new LowSync<string[]>(new JSONFileSync(resolvePath(['db', 'category.json'])));
+import { categoryDB, tagDB } from '../../utils/server/db';
 
 const handler = nextConnect({
   onError(error, _, res: NextApiResponse<ConfigResponseData>) {
@@ -15,10 +11,10 @@ const handler = nextConnect({
 });
 
 handler.get((_: NextApiRequest, res: NextApiResponse<ConfigResponseData>) => {
-  tagDb.read();
-  categoryDb.read();
-  const tags = tagDb.data ? tagDb.data : [];
-  const categories = categoryDb.data ? categoryDb.data : [];
+  tagDB.read();
+  categoryDB.read();
+  const tags = tagDB.data ? tagDB.data : [];
+  const categories = categoryDB.data ? categoryDB.data : [];
   res.status(200).json({ config: { tags, categories } });
 });
 

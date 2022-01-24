@@ -1,11 +1,12 @@
 import { List, Input } from '@arco-design/web-react';
 import React, { ReactElement, useState } from 'react';
-import Main from '../../../components/layout/main';
-import { MainCenter } from '../../../components/layout/main-center';
-import { Article, ArticleResponseSuccess } from '../../../types';
-import ReviewItem from '../../../components/review/ReviewItem';
-import { request, asyncRunSafe } from '../../../utils/client';
+import Main from '../../components/layout/main';
+import { MainCenter } from '../../components/layout/main-center';
+import { Article, ArticleResponseSuccess } from '../../types';
+import ReviewItem from '../../components/review/ReviewItem';
+import { request, asyncRunSafe } from '../../utils/client';
 import { useDeepCompareEffect } from 'react-use';
+import { withSessionSsr } from '../../lib/with-session';
 
 const InputSearch = Input.Search;
 
@@ -38,7 +39,6 @@ const Review = () => {
 
   return (
     <MainCenter>
-      {/* <Result status="500" subTitle="请求失败" extra={<Button type="primary">重试</Button>} /> */}
       <div style={{ padding: '0 12px' }}>
         <InputSearch searchButton placeholder="请输入标题名称搜索" />
       </div>
@@ -69,3 +69,18 @@ Review.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default Review;
+
+export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+  const user = req.session.user;
+
+  if (!user?.admin) {
+    return {
+      redirect: {
+        destination: `/login?redirectUri=${req.headers.referer}`,
+        permanent: false
+      }
+    };
+  }
+
+  return { props: { user } };
+});

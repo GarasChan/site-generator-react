@@ -8,9 +8,10 @@ export interface UsePostData<S, E> {
   data: S | null;
   error: E | null;
   retry: () => void;
+  requestImmediately?: boolean;
 }
 
-function useRequest<S, E = any>(config: AxiosRequestConfig): UsePostData<S, E> {
+function useRequest<S, E = any>(config: AxiosRequestConfig, requestImmediately = true): UsePostData<S, E> {
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState<S | null>(null);
   const [error, setError] = useState<E | null>(null);
@@ -39,8 +40,9 @@ function useRequest<S, E = any>(config: AxiosRequestConfig): UsePostData<S, E> {
   });
 
   useEffect(() => {
-    get();
-  }, [get]);
+    requestImmediately && get();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     loading,

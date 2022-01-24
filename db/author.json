@@ -8,6 +8,7 @@
   {
     "id": "id2",
     "name": "test",
-    "descImg": "/imgs/user/test.png"
+    "descImg": "/imgs/user/test.png",
+    "email": "diyad7299@qq.com"
   }
 ]

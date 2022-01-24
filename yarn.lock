@@ -113,6 +113,13 @@
     "@hapi/boom" "9.x.x"
     "@hapi/hoek" "9.x.x"
 
+"@hapi/b64@5.x.x":
+  version "5.0.0"
+  resolved "https://registry.npmmirror.com/@hapi/b64/download/@hapi/b64-5.0.0.tgz#b8210cbd72f4774985e78569b77e97498d24277d"
+  integrity sha1-uCEMvXL0d0mF54Vpt36XSY0kJ30=
+  dependencies:
+    "@hapi/hoek" "9.x.x"
+
 "@hapi/boom@9.x.x":
   version "9.1.4"
   resolved "https://registry.nlark.com/@hapi/boom/download/@hapi/boom-9.1.4.tgz"
@@ -120,10 +127,33 @@
   dependencies:
     "@hapi/hoek" "9.x.x"
 
+"@hapi/bourne@2.x.x":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@hapi/bourne/download/@hapi/bourne-2.0.0.tgz#5bb2193eb685c0007540ca61d166d4e1edaf918d"
+  integrity sha1-W7IZPraFwAB1QMph0WbU4e2vkY0=
+
+"@hapi/cryptiles@5.x.x":
+  version "5.1.0"
+  resolved "https://registry.npmmirror.com/@hapi/cryptiles/download/@hapi/cryptiles-5.1.0.tgz#655de4cbbc052c947f696148c83b187fc2be8f43"
+  integrity sha1-ZV3ky7wFLJR/aWFIyDsYf8K+j0M=
+  dependencies:
+    "@hapi/boom" "9.x.x"
+
 "@hapi/hoek@9.x.x":
   version "9.2.1"
   resolved "https://registry.npmmirror.com/@hapi/hoek/download/@hapi/hoek-9.2.1.tgz"
   integrity sha1-lVEUKhmAUDdSU2tQUP2Z9KfxOxc=
+
+"@hapi/iron@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.npmmirror.com/@hapi/iron/download/@hapi/iron-6.0.0.tgz#ca3f9136cda655bdd6028de0045da0de3d14436f"
+  integrity sha1-yj+RNs2mVb3WAo3gBF2g3j0UQ28=
+  dependencies:
+    "@hapi/b64" "5.x.x"
+    "@hapi/boom" "9.x.x"
+    "@hapi/bourne" "2.x.x"
+    "@hapi/cryptiles" "5.x.x"
+    "@hapi/hoek" "9.x.x"
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
@@ -286,6 +316,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cookie@^0.4.0":
+  version "0.4.1"
+  resolved "https://registry.npmmirror.com/@types/cookie/download/@types/cookie-0.4.1.tgz?cache=0&sync_timestamp=1637265530042&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fcookie%2Fdownload%2F%40types%2Fcookie-0.4.1.tgz#bfd02c1f2224567676c1545199f87c3a861d878d"
+  integrity sha1-v9AsHyIkVnZ2wVRRmfh8OoYdh40=
+
 "@types/debug@^4.0.0":
   version "4.1.7"
   resolved "https://registry.npmmirror.com/@types/debug/download/@types/debug-4.1.7.tgz#7cc0ea761509124709b8b2d1090d8f6c17aadb82"
@@ -302,7 +337,7 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@*":
+"@types/express@*", "@types/express@^4.17.13":
   version "4.17.13"
   resolved "https://registry.npmmirror.com/@types/express/download/@types/express-4.17.13.tgz#a76e2995728999bab51a33fabce1d705a3709034"
   integrity sha1-p24plXKJmbq1GjP6vOHXBaNwkDQ=
@@ -374,6 +409,11 @@
   version "16.11.10"
   resolved "https://registry.npmmirror.com/@types/node/download/@types/node-16.11.10.tgz"
   integrity sha512-3aRnHa1KlOEEhJ6+CvyHKK5vE9BcLGjtUpwvqYLRvYNQKMfabu3BwfJaA/SLW8dxe28LsNDjtHwePTuzn3gmOA==
+
+"@types/node@^16.11.7":
+  version "16.11.21"
+  resolved "https://registry.npmmirror.com/@types/node/download/@types/node-16.11.21.tgz#474d7589a30afcf5291f59bd49cca9ad171ffde4"
+  integrity sha512-Pf8M1XD9i1ksZEcCP8vuSNwooJ/bZapNmIzpmsMaL+jMI+8mEYU3PKvs+xDNuQcJWF/x24WzY4qxLtB0zNow9A==
 
 "@types/prop-types@*":
   version "15.7.4"
@@ -1015,6 +1055,11 @@ convert-source-map@1.7.0:
   integrity sha1-F6LLiC1/d9NJBYXizmxSRCSjpEI=
   dependencies:
     safe-buffer "~5.1.1"
+
+cookie@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.npmmirror.com/cookie/download/cookie-0.4.1.tgz#afd713fe26ebd21ba95ceb61f9a8116e50a537d1"
+  integrity sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==
 
 copy-anything@^2.0.1:
   version "2.0.3"
@@ -2080,6 +2125,17 @@ internal-slot@^1.0.3:
     get-intrinsic "^1.1.0"
     has "^1.0.3"
     side-channel "^1.0.4"
+
+iron-session@^6.0.5:
+  version "6.0.5"
+  resolved "https://registry.npmmirror.com/iron-session/download/iron-session-6.0.5.tgz#22dd6e31a290e726d8a5dae23cf89c9f431dc0a0"
+  integrity sha512-sxkymaQzPkgUnDRfxxstm4jKCKx+ElrdPKzk+uJWj98zk9EPBPHPMg4jJgd+p0ucj631bbrRL9Bjc+XTwxUzeg==
+  dependencies:
+    "@hapi/iron" "^6.0.0"
+    "@types/cookie" "^0.4.0"
+    "@types/express" "^4.17.13"
+    "@types/node" "^16.11.7"
+    cookie "^0.4.1"
 
 is-arguments@^1.0.4:
   version "1.1.1"

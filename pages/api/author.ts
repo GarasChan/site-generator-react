@@ -1,37 +1,34 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
-import { JSONFileSync, LowSync } from 'lowdb';
 import { Author, AuthorResponseData } from '../../types';
-import { resolvePath } from '../../utils/server';
-
-const db = new LowSync<Author[]>(new JSONFileSync(resolvePath(['db', 'author.json'])));
+import { authorDB } from '../../utils/server/db';
 
 export const getAuthor = (id?: string): Author[] => {
-  db.read();
-  if (!db.data) {
+  authorDB.read();
+  if (!authorDB.data) {
     return [];
   }
   if (typeof id === 'string') {
-    const author = db.data.find((item) => item.id === id);
+    const author = authorDB.data.find((item) => item.id === id);
     return author ? [author] : [];
   }
-  return db.data;
+  return authorDB.data;
 };
 
 export const writeAuthor = (author: Partial<Author>) => {
-  db.read();
-  if (!Array.isArray(db.data)) {
-    db.data = [author as Author];
+  authorDB.read();
+  if (!Array.isArray(authorDB.data)) {
+    authorDB.data = [author as Author];
   } else {
-    const current = db.data.find((item) => item.id === author.id);
+    const current = authorDB.data.find((item) => item.id === author.id);
     if (!current) {
-      db.data.unshift(author as Author);
+      authorDB.data.unshift(author as Author);
     } else {
       Object.assign(current, author);
     }
   }
-  db.write();
+  authorDB.write();
 };
 
 const handler = nextConnect({

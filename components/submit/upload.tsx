@@ -45,6 +45,14 @@ const Upload = (props: UploadProps) => {
     [updateData]
   );
 
+  const getTitleFromContent = (content: string) => {
+    const result = content.match(/# (.+)/);
+    if (result?.length === 2) {
+      return result[1];
+    }
+    return '';
+  };
+
   const request = useCallback(
     (options: RequestOptions) => {
       const { file, onError, onSuccess } = options;
@@ -57,6 +65,10 @@ const Upload = (props: UploadProps) => {
           return;
         }
         const { content, data } = matter(result);
+        if (!data.title) {
+          // 从 md 中获取文章标题
+          data.title = getTitleFromContent(content);
+        }
         updateData({ id: v4(), content, meta: data, filename: file.name });
         onSuccess();
       };
