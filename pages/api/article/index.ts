@@ -54,6 +54,7 @@ const write = (article: Partial<Article>) => {
     if (!current) {
       articleDB.data.unshift(article as Article);
     } else {
+      delete article.createTime;
       Object.assign(current, article);
     }
   }
@@ -80,6 +81,31 @@ handler.get((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => 
 });
 
 handler.post((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => {
+  const { id, filename, meta, content } = req.body;
+
+  if (!fs.existsSync(articleDir)) {
+    fs.mkdirSync(articleDir);
+  }
+
+  const file = formatFile(content, meta);
+  const serverFilename = `${id}.md`;
+  const time = dayjs().format('YYYY-MM-DD HH:mm');
+  const info: Article = {
+    id,
+    filename: serverFilename,
+    originFilename: filename,
+    createTime: time,
+    updateTime: time,
+    status: ArticleStatus.UPLOADED,
+    ...meta
+  };
+  fs.writeFileSync(join(articleDir, serverFilename), file, { encoding: 'utf-8' });
+
+  write(info);
+  res.status(200).end();
+});
+
+handler.put((req: NextApiRequest, res: NextApiResponse<ArticleResponseData>) => {
   const { id, filename, meta, content } = req.body;
 
   if (!fs.existsSync(articleDir)) {

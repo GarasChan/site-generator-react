@@ -2,21 +2,24 @@ import React, { ReactElement } from 'react';
 import Main from '../../components/layout/main';
 import { MainCenter } from '../../components/layout/main-center';
 import ArticleContent from '../../components/article-content';
-import { ArticleData, getArticle } from '../../utils/server';
+import { getArticle } from '../../utils/server';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
+import { Article } from '../../types';
 
 export interface ReviewProps {
-  data: ArticleData;
+  data: Article;
 }
 
 const Review = ({ data }: ReviewProps) => {
+  const { title, html } = data;
+
   return (
     <MainCenter>
       <Head>
-        <title>{data.title}</title>
+        <title>{title}</title>
       </Head>
-      <ArticleContent content={data.file} />
+      {html && <ArticleContent content={html} />}
     </MainCenter>
   );
 };
@@ -33,7 +36,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     };
   }
 
-  const data = await getArticle(id as string);
+  const data = await getArticle(id as string, { returnHTML: true });
 
   if (!data) {
     return {
@@ -43,7 +46,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      data: data
+      data
     }
   };
 };

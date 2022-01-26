@@ -72,11 +72,11 @@ export default Review;
 
 export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
   const user = req.session.user;
-
+  console.log(req.headers);
   if (!user?.admin) {
     return {
       redirect: {
-        destination: `/login?redirectUri=${req.headers.referer}`,
+        destination: `/login?redirectUri=${req.headers.referer || req.headers.host}`,
         permanent: false
       }
     };

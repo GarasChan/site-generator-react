@@ -22,7 +22,7 @@ function isEmpty(text: string) {
 
 // https://github.com/imzbf/md-editor-rt
 const Editor = (props: EditorProps) => {
-  const { data, go, updateData } = useContext(SubmitContext);
+  const { data, go, updateData, isModify } = useContext(SubmitContext);
   const { content, meta } = data!;
   const { hide } = props;
   const [text, setText] = useState(content);
@@ -76,6 +76,7 @@ const Editor = (props: EditorProps) => {
               onClick={() => {
                 go(1);
               }}
+              disabled={isModify}
             >
               <IconLeft />
               <span>上一步</span>

@@ -8,10 +8,6 @@ import html from 'remark-html';
 
 // TODO: 用 marked 解析 markdown
 
-export interface ArticleData extends Article {
-  file: string;
-}
-
 const db = new LowSync<Article[]>(new JSONFileSync(resolvePath(['db', 'article.json'])));
 
 export const markdownToHtml = async (markdown: string) => {
@@ -19,7 +15,11 @@ export const markdownToHtml = async (markdown: string) => {
   return result.toString();
 };
 
-export const getArticle = async (id: string): Promise<ArticleData | null> => {
+export const getArticle = async (
+  id: string,
+  options: { returnHTML?: boolean; returnContent?: boolean }
+): Promise<Article | null> => {
+  const { returnHTML, returnContent } = options;
   db.read();
   if (!db.data) {
     return null;
@@ -28,16 +28,19 @@ export const getArticle = async (id: string): Promise<ArticleData | null> => {
   if (!article) {
     return null;
   }
-  const { filename } = article;
 
-  const file = fs.readFileSync(resolvePath([process.env.ARTICLE_PATH!, filename]), { encoding: 'utf-8' });
-  const { content } = matter(file);
-  const htmlContent = await markdownToHtml(content);
+  const newArticle = { ...article };
+  if (returnHTML || returnContent) {
+    const { filename } = newArticle;
+    const file = fs.readFileSync(resolvePath([process.env.ARTICLE_PATH!, filename]), { encoding: 'utf-8' });
+    const { content } = matter(file);
+    newArticle.content = content;
+    if (returnHTML) {
+      newArticle.html = await markdownToHtml(content);
+    }
+  }
 
-  return {
-    ...article,
-    file: htmlContent
-  };
+  return newArticle;
 };
 
 export const getArticleLink = (id: string, title?: string, origin?: string) => {

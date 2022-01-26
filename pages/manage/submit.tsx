@@ -7,12 +7,35 @@ import Editor from '../../components/submit/editor';
 import Meta from '../../components/submit/meta';
 import Result from '../../components/submit/result';
 import { MainCenter } from '../../components/layout/main-center';
+import { GetServerSideProps } from 'next';
+import { getArticle } from '../../utils/server';
+import { Article } from '../../types';
 
 const { Step } = Steps;
 
-const Submit = () => {
-  const [data, setData] = useState<SubmitData | null>(null);
-  const [current, setCurrent] = useState<number>(1);
+const getSubmitDataFromArticle = (article: Article) => {
+  if (!article) {
+    return null;
+  }
+  return {
+    id: article.id,
+    meta: {
+      author: article.author,
+      title: article.title,
+      categories: article.categories,
+      tags: article.tags,
+      cover: article.cover
+    },
+    content: article.content || '',
+    filename: article.originFilename
+  };
+};
+
+const Submit = ({ article }: { article: Article }) => {
+  const [data, setData] = useState<SubmitData | null>(getSubmitDataFromArticle(article));
+  const [current, setCurrent] = useState<number>(article ? 2 : 1);
+
+  const isModify = !!article;
 
   const go = useCallback((step: number) => {
     setCurrent(step);
@@ -26,14 +49,14 @@ const Submit = () => {
     window.onbeforeunload = function (e) {
       e = e || window.event;
       if (e) {
-        e.returnValue = '关闭提示';
+        e.returnValue = '系统可能不会保存您所做的更改。';
       }
-      return '关闭提示';
+      return '系统可能不会保存您所做的更改。';
     };
   }, []);
 
   return (
-    <SubmitContext.Provider value={{ data, updateData, go }}>
+    <SubmitContext.Provider value={{ data, updateData, go, isModify }}>
       <MainCenter>
         <div style={{ maxWidth: 1440, margin: '0 auto' }}>
           <Steps type="arrow" size="small" current={current} style={{ marginBottom: 24 }}>
@@ -42,7 +65,7 @@ const Submit = () => {
             <Step title="文档信息" />
             <Step title="提交审核" />
           </Steps>
-          <Upload hide={current !== 1} />
+          {!isModify && <Upload hide={current !== 1} />}
           {data && (
             <>
               <Editor hide={current !== 2} />
@@ -61,3 +84,23 @@ Submit.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default Submit;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { article_id } = context.query;
+
+  if (!article_id) {
+    return { props: { article: null } };
+  }
+
+  const article = await getArticle(article_id as string, { returnContent: true });
+
+  if (!article) {
+    return {
+      notFound: true
+    };
+  }
+
+  return {
+    props: { article } // will be passed to the page component as props
+  };
+};

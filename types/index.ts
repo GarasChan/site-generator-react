@@ -24,6 +24,10 @@ export interface Article {
   categories: string[];
   tags: string[];
   cover?: string;
+  /** 文档内容 */
+  content?: string;
+  /** 文档标签 */
+  html?: string;
 }
 
 export interface ArticleResponseSuccess {

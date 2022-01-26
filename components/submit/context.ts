@@ -11,6 +11,7 @@ export interface SubmitContextData {
   data: SubmitData | null;
   updateData: (val: SubmitData | null) => void;
   go: (step: number) => void;
+  isModify?: boolean;
 }
 
 const noop = () => {};

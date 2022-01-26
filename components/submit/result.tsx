@@ -2,9 +2,10 @@ import React, { useCallback, useContext } from 'react';
 import { Button, Result as ArcoResult, Space, Spin } from '@arco-design/web-react';
 import SubmitContext from './context';
 import useRequest from '../../hooks/useRequest';
+import { useRouter } from 'next/dist/client/router';
 
 const Result = () => {
-  const { data, updateData, go } = useContext(SubmitContext);
+  const { data, updateData, go, isModify } = useContext(SubmitContext);
   const {
     data: result,
     error,
@@ -40,11 +41,13 @@ const Result = () => {
                     </Button>
                   </Space>
                 ]
-              : [
+              : !isModify
+              ? [
                   <Button key="again" type="primary" onClick={handleFirst}>
                     继续提交
                   </Button>
                 ]
+              : []
           }
         />
       )}
